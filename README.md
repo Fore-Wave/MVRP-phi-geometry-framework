@@ -11,5 +11,10 @@ Comprehensive experimental framework testing golden ratio (φ≈1.618) geometry 
 Keywords: golden ratio, phi geometry, optical coherence, electrochemistry, open science, MVRP, replication
 
 
-
-
+*topics (for discoverability):
+   - golden-ratio
+   - phi-geometry
+   - open-science
+   - experimental-physics
+   - optics
+   - electrochemistry
