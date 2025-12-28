@@ -18,3 +18,6 @@ Keywords: golden ratio, phi geometry, optical coherence, electrochemistry, open 
    - experimental-physics
    - optics
    - electrochemistry
+
+
+https://zenodo.org/records/18079209
