@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVRP Data Entry Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --gold: #D4AF37;
+            --dark-gold: #B8941F;
+            --deep-blue: #0A1628;
+            --electric-blue: #00D9FF;
+            --soft-blue: #1E3A5F;
+            --warm-white: #F5F1E8;
+            --silver: #C0C0C0;
+            --success: #4CAF50;
+            --warning: #ff9800;
+            --error: #f44336;
+        }
+        
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #0D1F3C 50%, #1A2942 100%);
+            color: var(--warm-white);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(30, 58, 95, 0.4);
+            border-radius: 16px;
+            border: 1px solid var(--gold);
+        }
+        
+        h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: 36px;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: var(--electric-blue);
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .sidebar {
+            background: rgba(30, 58, 95, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .experiment-selector {
+            margin-bottom: 30px;
+        }
+        
+        .experiment-selector h3 {
+            color: var(--electric-blue);
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .experiment-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid var(--electric-blue);
+            border-radius: 8px;
+            color: var(--warm-white);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .experiment-btn:hover {
+            background: rgba(0, 217, 255, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .experiment-btn.active {
+            background: var(--electric-blue);
+            color: var(--deep-blue);
+            font-weight: 700;
+        }
+        
+        .quick-stats {
+            background: rgba(10, 22, 40, 0.6);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+        
+        .stat-value {
+            color: var(--gold);
+            font-weight: 700;
+        }
+        
+        .main-panel {
+            background: rgba(30, 58, 95, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+        }
+        
+        .form-section h3 {
+            color: var(--gold);
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 10px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .form-field {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-size: 12px;
+            color: var(--electric-blue);
+            margin-bottom: 8px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        input, select, textarea {
+            background: rgba(10, 22, 40, 0.6);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 6px;
+            padding: 10px;
+            color: var(--warm-white);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 14px;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--electric-blue);
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0;
+        }
+        
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .time-series-container {
+            background: rgba(10, 22, 40, 0.6);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .time-series-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .add-reading-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .add-reading-btn:hover {
+            background: #45a049;
+        }
+        
+        .reading-row {
+            display: grid;
+            grid-template-columns: 100px 120px 120px 1fr 80px;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .reading-row input {
+            padding: 8px;
+            font-size: 13px;
+        }
+        
+        .remove-btn {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: var(--gold);
+            color: var(--deep-blue);
+        }
+        
+        .btn-primary:hover {
+            background: var(--dark-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--electric-blue);
+            color: var(--deep-blue);
+        }
+        
+        .btn-secondary:hover {
+            background: #00b8d4;
+            transform: translateY(-2px);
+        }
+        
+        .btn-export {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-export:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 13px;
+            display: none;
+        }
+        
+        .status-message.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+            display: block;
+        }
+        
+        .status-message.error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid var(--error);
+            color: var(--error);
+            display: block;
+        }
+        
+        .csv-preview {
+            background: rgba(10, 22, 40, 0.8);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow: auto;
+        }
+        
+        .csv-preview h4 {
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .csv-preview pre {
+            color: var(--electric-blue);
+            font-size: 11px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .reading-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔬 MVRP Data Entry Dashboard</h1>
+            <p class="subtitle">Streamlined Experimental Data Collection & CSV Export</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="experiment-selector">
+                    <h3>📋 Experiment Type</h3>
+                    <button class="experiment-btn active" onclick="selectExperiment('electrolytic')">
+                        ⚡ Electrolytic (Voltage/Persistence)
+                    </button>
+                    <button class="experiment-btn" onclick="selectExperiment('optical')">
+                        ✨ Optical (Laser Coherence)
+                    </button>
+                    <button class="experiment-btn" onclick="selectExperiment('vortex')">
+                        🌀 Vortex (Toroidal Flow)
+                    </button>
+                    <button class="experiment-btn" onclick="selectExperiment('hybrid')">
+                        🔀 Hybrid (Multi-Domain)
+                    </button>
+                    <button class="experiment-btn" onclick="selectExperiment('custom')">
+                        ⚙️ Custom Template
+                    </button>
+                </div>
+
+                <div class="quick-stats">
+                    <h4 style="color: var(--electric-blue); margin-bottom: 15px; font-size: 14px;">📊 Session Stats</h4>
+                    <div class="stat-item">
+                        <span>Trials Logged:</span>
+                        <span class="stat-value" id="trialCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Data Points:</span>
+                        <span class="stat-value" id="dataPoints">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Last Export:</span>
+                        <span class="stat-value" id="lastExport">Never</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Current Template:</span>
+                        <span class="stat-value" id="currentTemplate">Electrolytic</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Panel -->
+            <div class="main-panel">
+                <form id="dataEntryForm">
+                    <!-- Trial Metadata -->
+                    <div class="form-section">
+                        <h3>🎯 Trial Metadata</h3>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label>Trial Number</label>
+                                <input type="number" id="trialNumber" required min="1" value="1">
+                            </div>
+                            <div class="form-field">
+                                <label>Date</label>
+                                <input type="date" id="trialDate" required>
+                            </div>
+                            <div class="form-field">
+                                <label>Time (Start)</label>
+                                <input type="time" id="trialTime" required>
+                            </div>
+                            <div class="form-field">
+                                <label>Experimenter</label>
+                                <input type="text" id="experimenter" placeholder="Your name" value="Evan Howell">
+                            </div>
+                            <div class="form-field">
+                                <label>Condition</label>
+                                <select id="condition" required>
+                                    <option value="baseline">Baseline (Control)</option>
+                                    <option value="phi_only">φ-spacing Only</option>
+                                    <option value="acoustic_only">Acoustic Only</option>
+                                    <option value="phi_acoustic">φ + Acoustic (Synergy)</option>
+                                    <option value="other">Other (Specify in Notes)</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label>Blinded?</label>
+                                <div class="checkbox-group">
+                                    <label><input type="checkbox" id="blinded"> Yes (Spacing Unknown)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Setup Parameters -->
+                    <div class="form-section" id="setupSection">
+                        <h3>⚙️ Setup Parameters</h3>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label>φ Ratio (Spacing)</label>
+                                <input type="number" id="phiRatio" step="0.001" placeholder="1.618" value="1.618">
+                            </div>
+                            <div class="form-field">
+                                <label>Acoustic Frequency (Hz)</label>
+                                <input type="number" id="acousticFreq" step="1" placeholder="528">
+                            </div>
+                            <div class="form-field">
+                                <label>Water Volume (mL)</label>
+                                <input type="number" id="waterVolume" step="10" placeholder="4000">
+                            </div>
+                            <div class="form-field">
+                                <label>Salt Concentration (M)</label>
+                                <input type="number" id="saltConc" step="0.01" placeholder="0.1">
+                            </div>
+                            <div class="form-field">
+                                <label>Electrode Material</label>
+                                <select id="electrodeMaterial">
+                                    <option value="stainless_steel">Stainless Steel</option>
+                                    <option value="copper">Copper</option>
+                                    <option value="graphite">Graphite</option>
+                                    <option value="platinum">Platinum</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label>Electrode Spacing (cm)</label>
+                                <input type="number" id="electrodeSpacing" step="0.1" placeholder="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Optical Parameters (shown for optical/hybrid) -->
+                    <div class="form-section" id="opticalSection" style="display:none;">
+                        <h3>✨ Optical Parameters</h3>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label>Laser Wavelength (nm)</label>
+                                <select id="laserWavelength">
+                                    <option value="405">405nm (Blue-Violet)</option>
+                                    <option value="532" selected>532nm (Green)</option>
+                                    <option value="650">650nm (Red)</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label>Laser Power (mW)</label>
+                                <input type="number" id="laserPower" step="1" placeholder="5">
+                            </div>
+                            <div class="form-field">
+                                <label>Beam Spot Diameter - Baseline (mm)</label>
+                                <input type="number" id="spotBaseline" step="0.1" placeholder="5.0">
+                            </div>
+                            <div class="form-field">
+                                <label>Beam Spot Diameter - Treatment (mm)</label>
+                                <input type="number" id="spotTreatment" step="0.1" placeholder="3.5">
+                            </div>
+                            <div class="form-field">
+                                <label>Beam Deflection (degrees)</label>
+                                <input type="number" id="beamDeflection" step="0.1" placeholder="0">
+                            </div>
+                            <div class="form-field">
+                                <label>Intensity Change (%)</label>
+                                <input type="number" id="intensityChange" step="1" placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Environmental Conditions -->
+                    <div class="form-section">
+                        <h3>🌡️ Environmental Conditions</h3>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label>Temperature - Start (°F or °C)</label>
+                                <input type="number" id="tempStart" step="0.1" placeholder="72.0">
+                            </div>
+                            <div class="form-field">
+                                <label>Temperature - End (°F or °C)</label>
+                                <input type="number" id="tempEnd" step="0.1" placeholder="72.1">
+                            </div>
+                            <div class="form-field">
+                                <label>Room Humidity (%)</label>
+                                <input type="number" id="humidity" step="1" placeholder="45">
+                            </div>
+                            <div class="form-field">
+                                <label>Atmospheric Pressure (inHg)</label>
+                                <input type="number" id="pressure" step="0.01" placeholder="30.00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Time Series Data -->
+                    <div class="form-section">
+                        <h3>📈 Time Series Voltage Data</h3>
+                        <div class="time-series-container">
+                            <div class="time-series-header">
+                                <span style="color: var(--electric-blue); font-size: 13px;">Add voltage readings at specific time points:</span>
+                                <button type="button" class="add-reading-btn" onclick="addReading()">+ Add Reading</button>
+                            </div>
+                            <div id="readingsContainer">
+                                <!-- Initial row -->
+                                <div class="reading-row">
+                                    <input type="number" placeholder="Time (s)" step="1" class="reading-time" value="0">
+                                    <input type="number" placeholder="Voltage (V)" step="0.001" class="reading-voltage" value="0.000">
+                                    <input type="number" placeholder="Temp (°F)" step="0.1" class="reading-temp">
+                                    <input type="text" placeholder="Phase/Notes" class="reading-notes">
+                                    <button type="button" class="remove-btn" onclick="removeReading(this)">✕</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Metrics -->
+                    <div class="form-section">
+                        <h3>🎯 Calculated/Key Metrics</h3>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label>Peak Voltage (V)</label>
+                                <input type="number" id="peakVoltage" step="0.001" placeholder="Auto or Manual">
+                            </div>
+                            <div class="form-field">
+                                <label>τ Build Time (s)</label>
+                                <input type="number" id="tauBuild" step="1" placeholder="From fit">
+                            </div>
+                            <div class="form-field">
+                                <label>τ Decay Time (s)</label>
+                                <input type="number" id="tauDecay" step="1" placeholder="From fit">
+                            </div>
+                            <div class="form-field">
+                                <label>R Ratio (τ_build/τ_decay)</label>
+                                <input type="number" id="rRatio" step="0.01" placeholder="Auto-calculated">
+                            </div>
+                            <div class="form-field">
+                                <label>Bubble Coherence Score (0-10)</label>
+                                <input type="number" id="bubbleScore" min="0" max="10" step="1" placeholder="Visual assessment">
+                            </div>
+                            <div class="form-field">
+                                <label>Synergy Index</label>
+                                <input type="number" id="synergyIndex" step="0.1" placeholder="V_synergy/V_baseline">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Observations & Notes -->
+                    <div class="form-section">
+                        <h3>📝 Observations & Notes</h3>
+                        <div class="form-field">
+                            <label>Detailed Observations</label>
+                            <textarea id="observations" placeholder="Record all observations: bubble patterns, voltage anomalies, equipment issues, confounds, anything unusual..."></textarea>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label>Video Recording?</label>
+                                <div class="checkbox-group">
+                                    <label><input type="checkbox" id="videoRecorded"> Yes</label>
+                                </div>
+                            </div>
+                            <div class="form-field">
+                                <label>Video URL/Filename</label>
+                                <input type="text" id="videoUrl" placeholder="YouTube link or filename">
+                            </div>
+                            <div class="form-field">
+                                <label>Data Quality</label>
+                                <select id="dataQuality">
+                                    <option value="excellent">Excellent</option>
+                                    <option value="good" selected>Good</option>
+                                    <option value="fair">Fair (Some issues)</option>
+                                    <option value="poor">Poor (Major confounds)</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label>Confounds/Issues</label>
+                                <input type="text" id="confounds" placeholder="e.g., bucket leak, probe contact, drift">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="previewCSV()">👁️ Preview CSV</button>
+                        <button type="button" class="btn btn-primary" onclick="saveToLocalStorage()">💾 Save Trial</button>
+                        <button type="button" class="btn btn-export" onclick="exportCSV()">📊 Export CSV</button>
+                        <button type="button" class="btn" style="background: var(--warning); color: white;" onclick="clearForm()">🔄 Clear Form</button>
+                    </div>
+
+                    <div id="statusMessage" class="status-message"></div>
+                </form>
+
+                <!-- CSV Preview Area -->
+                <div id="csvPreviewArea" class="csv-preview" style="display:none;">
+                    <h4>📋 CSV Preview</h4>
+                    <pre id="csvContent"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-set today's date
+        document.getElementById('trialDate').valueAsDate = new Date();
+        
+        // Auto-set current time
+        const now = new Date();
+        document.getElementById('trialTime').value = now.toTimeString().slice(0,5);
+        
+        let trialCount = 0;
+        let allTrials = [];
+        
+        // Load saved trials from localStorage
+        function loadSavedTrials() {
+            const saved = localStorage.getItem('mvrp_trials');
+            if (saved) {
+                allTrials = JSON.parse(saved);
+                trialCount = allTrials.length;
+                updateStats();
+            }
+        }
+        
+        // Select experiment type
+        function selectExperiment(type) {
+            // Update active button
+            document.querySelectorAll('.experiment-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Show/hide relevant sections
+            const opticalSection = document.getElementById('opticalSection');
+            if (type === 'optical' || type === 'hybrid') {
+                opticalSection.style.display = 'block';
+            } else {
+                opticalSection.style.display = 'none';
+            }
+            
+            // Update template name
+            const templateNames = {
+                'electrolytic': 'Electrolytic',
+                'optical': 'Optical',
+                'vortex': 'Vortex',
+                'hybrid': 'Hybrid',
+                'custom': 'Custom'
+            };
+            document.getElementById('currentTemplate').textContent = templateNames[type];
+        }
+        
+        // Add voltage reading row
+        function addReading() {
+            const container = document.getElementById('readingsContainer');
+            const row = document.createElement('div');
+            row.className = 'reading-row';
+            row.innerHTML = `
+                <input type="number" placeholder="Time (s)" step="1" class="reading-time">
+                <input type="number" placeholder="Voltage (V)" step="0.001" class="reading-voltage">
+                <input type="number" placeholder="Temp (°F)" step="0.1" class="reading-temp">
+                <input type="text" placeholder="Phase/Notes" class="reading-notes">
+                <button type="button" class="remove-btn" onclick="removeReading(this)">✕</button>
+            `;
+            container.appendChild(row);
+            updateStats();
+        }
+        
+        // Remove reading row
+        function removeReading(btn) {
+            btn.parentElement.remove();
+            updateStats();
+        }
+        
+        // Collect form data
+        function collectFormData() {
+            const data = {
+                // Metadata
+                trial: document.getElementById('trialNumber').value,
+                date: document.getElementById('trialDate').value,
+                time: document.getElementById('trialTime').value,
+                experimenter: document.getElementById('experimenter').value,
+                condition: document.getElementById('condition').value,
+                blinded: document.getElementById('blinded').checked ? 'Y' : 'N',
+                
+                // Setup
+                phi_ratio: document.getElementById('phiRatio').value || '',
+                acoustic_hz: document.getElementById('acousticFreq').value || '',
+                water_ml: document.getElementById('waterVolume').value || '',
+                salt_M: document.getElementById('saltConc').value || '',
+                electrode_material: document.getElementById('electrodeMaterial').value,
+                electrode_spacing_cm: document.getElementById('electrodeSpacing').value || '',
+                
+                // Optical (if visible)
+                laser_wavelength_nm: document.getElementById('laserWavelength').value || '',
+                laser_power_mw: document.getElementById('laserPower').value || '',
+                spot_baseline_mm: document.getElementById('spotBaseline').value || '',
+                spot_treatment_mm: document.getElementById('spotTreatment').value || '',
+                beam_deflection_deg: document.getElementById('beamDeflection').value || '',
+                intensity_change_pct: document.getElementById('intensityChange').value || '',
+                
+                // Environment
+                temp_start: document.getElementById('tempStart').value || '',
+                temp_end: document.getElementById('tempEnd').value || '',
+                humidity_pct: document.getElementById('humidity').value || '',
+                pressure_inhg: document.getElementById('pressure').value || '',
+                
+                // Metrics
+                peak_voltage_v: document.getElementById('peakVoltage').value || '',
+                tau_build_s: document.getElementById('tauBuild').value || '',
+                tau_decay_s: document.getElementById('tauDecay').value || '',
+                r_ratio: document.getElementById('rRatio').value || '',
+                bubble_score: document.getElementById('bubbleScore').value || '',
+                synergy_index: document.getElementById('synergyIndex').value || '',
+                
+                // Observations
+                observations: document.getElementById('observations').value,
+                video_recorded: document.getElementById('videoRecorded').checked ? 'Y' : 'N',
+                video_url: document.getElementById('videoUrl').value,
+                data_quality: document.getElementById('dataQuality').value,
+                confounds: document.getElementById('confounds').value,
+                
+                // Time series
+                timeSeries: collectTimeSeries()
+            };
+            
+            return data;
+        }
+        
+        // Collect time series data
+        function collectTimeSeries() {
+            const rows = document.querySelectorAll('.reading-row');
+            const series = [];
+            rows.forEach(row => {
+                const time = row.querySelector('.reading-time').value;
+                const voltage = row.querySelector('.reading-voltage').value;
+                const temp = row.querySelector('.reading-temp').value;
+                const notes = row.querySelector('.reading-notes').value;
+                if (time !== '') {
+                    series.push({ time, voltage, temp, notes });
+                }
+            });
+            return series;
+        }
+        
+        // Convert to CSV
+        function dataToCSV(trials) {
+            // Headers
+            let csv = 'trial,date,time,experimenter,condition,blinded,phi_ratio,acoustic_hz,water_ml,salt_M,electrode_material,electrode_spacing_cm,laser_wavelength_nm,laser_power_mw,spot_baseline_mm,spot_treatment_mm,beam_deflection_deg,intensity_change_pct,temp_start,temp_end,humidity_pct,pressure_inhg,peak_voltage_v,tau_build_s,tau_decay_s,r_ratio,bubble_score,synergy_index,observations,video_recorded,video_url,data_quality,confounds\n';
+            
+            // Data rows
+            trials.forEach(trial => {
+                const row = [
+                    trial.trial,
+                    trial.date,
+                    trial.time,
+                    trial.experimenter,
+                    trial.condition,
+                    trial.blinded,
+                    trial.phi_ratio,
+                    trial.acoustic_hz,
+                    trial.water_ml,
+                    trial.salt_M,
+                    trial.electrode_material,
+                    trial.electrode_spacing_cm,
+                    trial.laser_wavelength_nm,
+                    trial.laser_power_mw,
+                    trial.spot_baseline_mm,
+                    trial.spot_treatment_mm,
+                    trial.beam_deflection_deg,
+                    trial.intensity_change_pct,
+                    trial.temp_start,
+                    trial.temp_end,
+                    trial.humidity_pct,
+                    trial.pressure_inhg,
+                    trial.peak_voltage_v,
+                    trial.tau_build_s,
+                    trial.tau_decay_s,
+                    trial.r_ratio,
+                    trial.bubble_score,
+                    trial.synergy_index,
+                    `"${trial.observations.replace(/"/g, '""')}"`,
+                    trial.video_recorded,
+                    trial.video_url,
+                    trial.data_quality,
+                    `"${trial.confounds.replace(/"/g, '""')}"`
+                ];
+                csv += row.join(',') + '\n';
+            });
+            
+            // Add time series data if present
+            if (trials.length > 0 && trials[0].timeSeries && trials[0].timeSeries.length > 0) {
+                csv += '\n\nTIME SERIES DATA\n';
+                csv += 'trial,time_s,voltage_v,temp,notes\n';
+                trials.forEach(trial => {
+                    if (trial.timeSeries) {
+                        trial.timeSeries.forEach(reading => {
+                            csv += `${trial.trial},${reading.time},${reading.voltage},${reading.temp || ''},"${(reading.notes || '').replace(/"/g, '""')}"\n`;
+                        });
+                    }
+                });
+            }
+            
+            return csv;
+        }
+        
+        // Save trial to localStorage
+        function saveToLocalStorage() {
+            const data = collectFormData();
+            allTrials.push(data);
+            localStorage.setItem('mvrp_trials', JSON.stringify(allTrials));
+            trialCount = allTrials.length;
+            updateStats();
+            showStatus('Trial saved successfully! Total trials: ' + trialCount, 'success');
+            
+            // Auto-increment trial number
+            document.getElementById('trialNumber').value = parseInt(document.getElementById('trialNumber').value) + 1;
+        }
+        
+        // Preview CSV
+        function previewCSV() {
+            const data = collectFormData();
+            const tempTrials = [...allTrials, data];
+            const csv = dataToCSV(tempTrials);
+            
+            document.getElementById('csvContent').textContent = csv;
+            document.getElementById('csvPreviewArea').style.display = 'block';
+            
+            // Scroll to preview
+            document.getElementById('csvPreviewArea').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Export CSV
+        function exportCSV() {
+            if (allTrials.length === 0) {
+                showStatus('No trials saved yet! Save at least one trial first.', 'error');
+                return;
+            }
+            
+            const csv = dataToCSV(allTrials);
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const timestamp = new Date().toISOString().slice(0,10);
+            a.download = `mvrp_data_${timestamp}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            // Update last export time
+            const now = new Date().toLocaleTimeString();
+            document.getElementById('lastExport').textContent = now;
+            localStorage.setItem('mvrp_last_export', now);
+            
+            showStatus('CSV exported successfully! (' + allTrials.length + ' trials)', 'success');
+        }
+        
+        // Clear form
+        function clearForm() {
+            if (confirm('Clear current form? (Saved trials will not be deleted)')) {
+                document.getElementById('dataEntryForm').reset();
+                document.getElementById('trialDate').valueAsDate = new Date();
+                const now = new Date();
+                document.getElementById('trialTime').value = now.toTimeString().slice(0,5);
+                document.getElementById('csvPreviewArea').style.display = 'none';
+                showStatus('Form cleared', 'success');
+            }
+        }
+        
+        // Update stats
+        function updateStats() {
+            document.getElementById('trialCount').textContent = trialCount;
+            const dataPoints = document.querySelectorAll('.reading-row').length;
+            document.getElementById('dataPoints').textContent = dataPoints;
+        }
+        
+        // Show status message
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status-message ${type}`;
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Initialize
+        loadSavedTrials();
+        
+        // Load last export time
+        const lastExport = localStorage.getItem('mvrp_last_export');
+        if (lastExport) {
+            document.getElementById('lastExport').textContent = lastExport;
+        }
+    </script>
+</body>
+</html>
