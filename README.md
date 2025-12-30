@@ -10,7 +10,6 @@ Comprehensive experimental framework testing golden ratio (φ≈1.618) geometry 
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18079209.svg)](https://doi.org/10.5281/zenodo.18079209)
 
-
 Keywords: golden ratio, phi geometry, optical coherence, electrochemistry, open science, MVRP, replication
 
 
