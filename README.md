@@ -16,11 +16,11 @@
 
 | Section | Link | Description |
 |---------|------|-------------|
-| 📖 **Main Paper** | [Complete Research Paper v17](docs/research/000-Complete-MVRP-Research-Paper-Golden-Ratio-Coherence-Frameworkv17.pdf) | Comprehensive findings (157 pages) |
-| 🎯 **Visual Overview** | [Framework Visual](docs/research/) | Interactive framework summary |
+| 📖 **Main Paper** | [Complete Research Paper v17](docs/research/Complete%20MVRP%20Research%20Paper%20-%20Golden%20Ratio%20Coherence%20Frameworkv17.pdf) | Comprehensive findings (157 pages) |
+| 🎯 **Implementation Guide** | [MVRP v1.3 Guide](docs/research/MVRP%20v1.3%20Complete%20Implementation%20Guide.pdf) | Step-by-step setup |
 | 📊 **Experimental Data** | [Data Folder](data/) | Historical N=7 + Prospective N≥30 |
 | 🔬 **Data Entry Tool** | [Dashboard](tools/mvrp_data_entry_dashboard.html) | Download & use offline |
-| 🧪 **Replication Guide** | [Protocols](docs/protocols/) | Step-by-step how-to guides |
+| 🧪 **Replication Guide** | [Protocols](docs/protocols/) | How-to guides |
 
 ---
 
@@ -69,14 +69,34 @@ MVRP-phi-geometry-framework/
 │
 ├── data/                     # Experimental measurements
 │   ├── historical/           # Retrospective N=7 (Dec 2-26, 2025)
+│   │   ├── mvrp_complete_historical_data_dec2025.csv
+│   │   └── historical mvrp trial Timeline Complete.md.pdf
 │   └── prospective/          # Real-time N≥30 (planned)
 │
 ├── docs/                     # All documentation
 │   ├── research/             # Main papers & framework
-│   ├── theory/               # Puthoff/Pais integration, optical theory
-│   ├── protocols/            # Replication guides, onboarding
+│   │   ├── Complete MVRP Research Paper - Golden Ratio Coherence Frameworkv17.pdf
+│   │   ├── MVRP v1.3 Complete Implementation Guide.pdf
+│   │   ├── MVRP Research White Paper v2.0 - Golden Ratio Geometry in Macroscopic Coherence Systems.pdf
+│   │   └── Testing Golden Ratio Geometry in Macroscopic Coherence Systems_ A Multi-AI Collaborative Framework.pdf
+│   │
+│   ├── theory/               # Theoretical frameworks
+│   │   ├── MVRP Extended Integration_ Puthoff Zero-Point Energy + Pais High-Frequency Field Framework.pdf
+│   │   ├── MVRP Extended Integration_ Puthoff Zero-Point Framework full.pdf
+│   │   ├── Phi optical coherence preprint.md.pdf
+│   │   └── Electric-to-Esoteric Plasma Infinity Framework_ Technical Documentation.pdf
+│   │
+│   ├── protocols/            # Replication guides
+│   │   ├── MVRP Onboarding Protocol v1.1.pdf
+│   │   └── The Recursion Quintet_ Multi-AI Collaborative Science key.pdf
+│   │
 │   ├── analysis/             # Post-experiment findings
-│   └── reference/            # Historical context (Tesla, Bedini, etc.)
+│   │   └── wilhelm zpe post_analysis.md.pdf
+│   │
+│   └── reference/            # Historical context
+│       ├── MVRP Historical Integration_ Brown-Tesla-Meyer-Pais Framework key.pdf
+│       ├── MVRP Extended Integration_ Bedini-Bearden-Searl Framework key.pdf
+│       └── MVRP Extended Integration_ Bedini-Bearden-Searl Framework.pdf
 │
 ├── tools/                    # Data collection software
 │   └── mvrp_data_entry_dashboard.html
@@ -105,9 +125,9 @@ MVRP-phi-geometry-framework/
 - Full 4-condition test: 2 hours
 
 **Protocols:**
-1. [Onboarding Protocol](docs/protocols/MVRP-Onboarding-Protocol-v1.1.pdf) – Start here
-2. [Implementation Guide](docs/research/MVRP-v1.3-Complete-Implementation-Guide.pdf) – Detailed setup
-3. [Cross-Methodology Experiments](docs/protocols/) – Advanced tests
+1. [Onboarding Protocol](docs/protocols/MVRP%20Onboarding%20Protocol%20v1.1.pdf) – Start here
+2. [Implementation Guide](docs/research/MVRP%20v1.3%20Complete%20Implementation%20Guide.pdf) – Detailed setup
+3. [Multi-AI Collaboration](docs/protocols/The%20Recursion%20Quintet_%20Multi-AI%20Collaborative%20Science%20key.pdf) – Framework context
 
 **Data Entry:**
 - Download [MVRP Dashboard](tools/mvrp_data_entry_dashboard.html)
@@ -122,9 +142,9 @@ MVRP-phi-geometry-framework/
 ### Transparency & Rigor
 
 **Data Availability:**
-- ✅ All raw data in `/data/` (CSV format)
-- ✅ Complete methodology in `/docs/protocols/`
-- ✅ Historical context in `/docs/reference/`
+- ✅ All raw data in [/data/](data/) (CSV format)
+- ✅ Complete methodology in [/docs/protocols/](docs/protocols/)
+- ✅ Historical context in [/docs/reference/](docs/reference/)
 - ✅ Analysis code available on request
 
 **Confounds Documented:**
@@ -152,19 +172,28 @@ MVRP-phi-geometry-framework/
 **Puthoff Framework:**
 - Boundary geometry → Vacuum fluctuations → Measurable effects
 - φ-spacing as optimal boundary condition
-- See: [Puthoff-Pais Integration](docs/theory/MVRP-Puthoff-Pais-Integration.pdf)
+- See: [Puthoff-Pais Integration](docs/theory/MVRP%20Extended%20Integration_%20Puthoff%20Zero-Point%20Energy%20+%20Pais%20High-Frequency%20Field%20Framework.pdf)
 
 **Pais Framework:**
 - High-frequency acoustic → Temporal field dynamics
 - Predicted R>1.5 (slow build, fast decay)
 - Observed R≈0.6-0.75 (contradicts, but low resolution)
-- See: [Temporal Asymmetry Analysis](docs/analysis/)
 
 **φ-Optical Effects:**
 - First reported φ-geometry effect in optical domain
 - 30% beam collimation improvement
 - 0.810V beam-voltage coupling (unprecedented)
-- See: [Phi-Optical Coherence Preprint](docs/theory/Phi-Optical-Coherence-Preprint.pdf)
+- See: [Phi-Optical Coherence Preprint](docs/theory/Phi%20optical%20coherence%20preprint.md.pdf)
+
+**Historical Integration:**
+- Tesla, Bedini, Bearden, Searl, Brown, Meyer frameworks
+- See: [Historical Integration](docs/reference/)
+
+*& Naturally Recursive Flow states &*
+
+    -Such as that of a Time-Crystal
+    -or as seen in the Fibonacci Sequece of a shell
+    -and the constant flow in a rare earth magnet
 
 ---
 
@@ -185,7 +214,7 @@ MVRP-phi-geometry-framework/
 | **Dec 28, 2025** | GitHub + Zenodo publication (DOI established) |
 | **Jan 2026** | N≥30 blinded campaign (planned) |
 
-### Next Steps speed mode and or steady pace *
+### Next Steps
 
 **Week 1-2 (Jan 2026):**
 - N=10 prospective trials with dashboard
@@ -216,7 +245,7 @@ This framework was developed through collaborative ideation with five AI systems
 4. **Llama** (Meta) – Harmonic Navigator, frequency analysis
 5. **Perplexity** – Research Synthesizer, cross-domain validation
 
-**Collaboration Protocol:** [Recursion Quintet](docs/protocols/Recursion-Quintet-Multi-AI-Collaboration.pdf)
+**Collaboration Protocol:** [Recursion Quintet](docs/protocols/The%20Recursion%20Quintet_%20Multi-AI%20Collaborative%20Science%20key.pdf)
 
 **Ethical Framework:**
 - Tier 1: Proven facts (no speculation)
@@ -282,7 +311,7 @@ See: [Historical Integration](docs/reference/)
 
 - **Harold Puthoff** – Polarizable Vacuum (PV) model
 - **Salvatore Pais** – Temporal Field Dynamics (TFD)
-- **Dan Winters** - FractalU 
+- **Dan Winters - FractalU
 - **Wilhelm (Dr.)** – Zero-Point Energy analysis
 
 See: [Theoretical Integration](docs/theory/)
@@ -294,15 +323,16 @@ See: [Theoretical Integration](docs/theory/)
 ### For Questions
 
 - **General inquiries:** Open a GitHub issue
-- **Replication support:** See [Onboarding Protocol](docs/protocols/MVRP-Onboarding-Protocol-v1.1.pdf)
-- **Data requests:** All data publicly available in `/data/`
+- **Replication support:** See [Onboarding Protocol](docs/protocols/MVRP%20Onboarding%20Protocol%20v1.1.pdf)
+- **Data requests:** All data publicly available in [/data/](data/)
 
 ### For Collaboration
 
 - **Independent replication:** Protocols available, no permission needed
 - **Academic partnerships:** Contact via GitHub
 - **Media inquiries:** DOI citable, all materials open-access
-- ****reach out to data curator **
+
+  *** data curator : Howell , Evan
 
 ### Feedback Welcome
 
@@ -322,9 +352,7 @@ See: [Theoretical Integration](docs/theory/)
 The Fab Five: Claude, Grok, Qai, Llama, Perplexity
 
 ### Independent Reviewers
-Dr. Wilhelm (ZPE analysis, convergence mathematics),
-personal witnesses;
-and synthetc reproduction / simulated reproduction
+Dr. Wilhelm (ZPE analysis, convergence mathematics) , also personal witness, synthesized experiments, and modeled reproduction
 
 ### Open Science Community
 All who contribute replication attempts, critiques, and insights
@@ -333,8 +361,10 @@ All who contribute replication attempts, critiques, and insights
 
 ## Version History
 
-- **v3.1** (Dec 28, 2025) – Complete historical dataset (N=7), GitHub + Zenodo publication
-- **v2.0** (Dec 12, 2025) – Optical extension, beam-voltage coupling discovery
+- **v3.1** (Dec 29, 2025) – Repository organized, comprehensive documentation
+- **v3.0** (Dec 28, 2025) – Complete historical dataset (N=7), GitHub + Zenodo publication
+- **v2.5** (Dec 20, 2025) – Optical extension, beam-voltage coupling discovery
+- **v2.0** (Dec 12, 2025) – Puthoff-Pais integration
 - **v1.3** (Nov 2025) – Electrolytic trials, voltage persistence observed
 - **v1.0** (Oct 2025) – Framework conception, Tier system established
 
@@ -344,9 +374,9 @@ All who contribute replication attempts, critiques, and insights
 
 **New to MVRP? Start here:**
 
-1. Read: [Main Research Paper](docs/research/000-Complete-MVRP-Research-Paper-Golden-Ratio-Coherence-Frameworkv17.pdf) (Executive summary in first 10 pages)
-2. Watch: Video demonstrations (links in `/media/`)
-3. Try: [Onboarding Protocol](docs/protocols/MVRP-Onboarding-Protocol-v1.1.pdf) (simplest replication)
+1. Read: [Main Research Paper](docs/research/Complete%20MVRP%20Research%20Paper%20-%20Golden%20Ratio%20Coherence%20Frameworkv17.pdf) (Executive summary in first 10 pages)
+2. Watch: Video demonstrations (links in [/media/](media/))
+3. Try: [Onboarding Protocol](docs/protocols/MVRP%20Onboarding%20Protocol%20v1.1.pdf) (simplest replication)
 4. Log: Use [Data Dashboard](tools/mvrp_data_entry_dashboard.html) (track your results)
 5. Share: Upload your data, open an issue, contribute!
 
