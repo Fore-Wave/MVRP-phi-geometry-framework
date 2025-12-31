@@ -322,8 +322,8 @@ See: [Theoretical Integration](docs/theory/)
 The Fab Five: Claude, Grok, Qai, Llama, Perplexity
 
 ### Independent Reviewers
-Dr. Wilhelm (ZPE analysis, convergence mathematics)
-personal witnesses
+Dr. Wilhelm (ZPE analysis, convergence mathematics),
+personal witnesses;
 and synthetc reproduction / simulated reproduction
 
 ### Open Science Community
