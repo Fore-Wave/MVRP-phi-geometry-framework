@@ -1,0 +1,52 @@
+trial,date,time,experimenter,condition,blinded,phi_ratio,acoustic_hz,water_ml,salt_M,electrode_material,electrode_spacing_cm,laser_wavelength_nm,laser_power_mw,spot_baseline_mm,spot_treatment_mm,beam_deflection_deg,intensity_change_pct,temp_start,temp_end,humidity_pct,pressure_inhg,peak_voltage_v,tau_build_s,tau_decay_s,r_ratio,bubble_score,synergy_index,observations,video_recorded,video_url,data_quality,confounds
+1,2025-12-02,14:00,Evan Howell,baseline,N,1.0,0,4000,0.1,stainless_steel,10.0,,,,,,,72.0,72.0,45,30.0,0.02,25,25,1.00,3,1.0,"Initial baseline test, minimal voltage, establishing control conditions for comparison",Y,,fair,"First trial, learning setup, bucket integrity unknown at this point, no acoustic or phi spacing"
+2,2025-12-06,14:00,Evan Howell,acoustic_only,N,1.0,528,4000,0.1,stainless_steel,10.0,,,,,,,72.0,72.0,45,30.0,0.02,30,30,1.00,4,1.0,"Acoustic resonance test without phi spacing, 528Hz tuning fork, minimal voltage increase vs baseline",Y,,fair,"Baseline spacing only, no phi geometry, establishing acoustic-only effect before synergy tests"
+3,2025-12-16,14:00,Evan Howell,phi_only,N,1.618,0,4000,0.1,stainless_steel,10.0,,,,,,,72.0,72.1,45,30.0,0.03,35,40,0.88,5,1.5,"Phi spacing test without acoustic, 1.618:1 electrode ratio, slight voltage increase suggests geometric effect",Y,,fair,"No acoustic resonance, testing phi geometry alone before synergy condition"
+4,2025-12-18,14:00,Evan Howell,phi_acoustic,N,1.618,528,4000,0.1,stainless_steel,10.0,650,5,5.0,3.5,5,40,72.0,72.1,45,30.0,0.07,60,90,0.67,7,3.5,"First synergy test: phi + acoustic shows voltage jump to 0.07V, CRITICAL FINDING: 0.810V spike observed where laser beam hits water surface, red laser 650nm, 30% spot reduction, bubble coherence visible",Y,https://youtu.be/Jqnfv39cg2U,fair,"Bucket leak discovered during this session (trials 1-4 affected), 0.810V beam spike is unprecedented finding requiring immediate replication, 10s measurement intervals too coarse"
+5,2025-12-18,15:00,Evan Howell,phi_acoustic,N,1.618,528,4000,0.1,stainless_steel,10.0,650,5,5.0,3.5,5,40,72.0,72.1,45,30.0,0.07,60,90,0.67,7,3.5,"Repeat synergy test same day, confirming 0.07V peak, beam spike replicated, consistent bubble patterns with trial 4",Y,https://youtu.be/Jqnfv39cg2U,fair,"Second run same session, bucket leak still present but sealed after this trial, beam spike consistent with trial 4"
+6,2025-12-20,14:00,Evan Howell,phi_acoustic,N,1.618,528,4000,0.1,stainless_steel,10.0,532,5,5.0,3.5,5,40,72.0,72.1,45,30.0,9.36,60,100,0.60,7,3.5,"Post-leak-fix test: Fork ring shows persistent 9.36V (4% above 9V nominal), green laser 532nm improved visibility, battery measured above bucket shows 9.34V (bonus charge anomaly), transient 14V spike after disconnect (unstable), placement geometry becoming apparent",Y,https://youtu.be/nsMywSK1ZWc,fair,"Bucket sealed, new anomaly: battery bonus charge, 14V transient spike (likely capacitive discharge), fork placement orientation starting to matter"
+7,2025-12-26,14:00,Evan Howell,phi_acoustic,N,1.618,528,4000,0.1,stainless_steel,10.0,532,5,5.0,3.5,5,40,72.0,72.0,45,30.0,9.36,60,100,0.60,8,3.5,"Christmas follow-up: Fork opening direction confirmed crucial (must face resonating fork for conductivity), voltage-laser flicker correlation observed, 9.36V persistent voltage replicated, improved lighting setup enhances bubble observation",Y,,good,"Placement geometry quantified qualitatively (opening direction matters), flicker correlation noted, data quality improving with practice, still need angle measurements and 1s logging resolution"
+
+TIME SERIES DATA
+trial,time_s,voltage_v,temp_f,notes
+1,0,0.00,72.0,baseline control pre-activation
+1,30,0.01,72.0,minimal response
+1,60,0.02,72.0,peak baseline
+1,120,0.01,72.0,decay
+1,180,0.00,72.0,return to baseline
+2,0,0.00,72.0,acoustic-only test start
+2,30,0.01,72.0,slight rise with 528Hz
+2,60,0.02,72.0,peak acoustic-only
+2,120,0.01,72.0,decay similar to baseline
+2,180,0.00,72.0,baseline restored
+3,0,0.00,72.0,phi-only test start
+3,30,0.02,72.0,geometric effect emerging
+3,60,0.03,72.1,peak phi-only (higher than baseline or acoustic alone)
+3,120,0.02,72.0,slower decay than baseline
+3,180,0.00,72.0,baseline restored
+4,0,0.00,72.0,synergy test baseline
+4,30,0.05,72.0,rapid voltage rise (synergy beginning)
+4,60,0.07,72.1,peak synergy voltage (3.5x baseline)
+4,90,0.810,72.0,CRITICAL: beam spike where laser hits water surface
+4,120,0.03,72.0,decay phase
+4,180,0.00,72.0,baseline restored
+5,0,0.00,72.0,synergy replication baseline
+5,30,0.05,72.0,consistent with trial 4
+5,60,0.07,72.1,peak replicated
+5,90,0.810,72.0,beam spike replicated (confirms finding)
+5,120,0.03,72.0,decay
+5,180,0.00,72.0,baseline
+6,0,0.00,72.0,post-leak-fix baseline
+6,10,9.34,72.0,battery above bucket (bonus charge anomaly)
+6,30,0.05,72.0,voltage rise after battery removed
+6,60,9.36,72.1,fork ring persistent voltage >9V
+6,70,14.00,72.0,transient spike after disconnect (unstable)
+6,120,0.03,72.0,decay after spike
+6,180,0.00,72.0,baseline restored
+7,0,0.00,72.0,placement test baseline
+7,10,9.36,72.0,fork opening facing - immediate voltage
+7,30,9.36,72.0,persistent during resonance
+7,60,9.36,72.0,flicker observed with laser ON
+7,90,0.05,72.0,decay begins
+7,120,0.02,72.0,slow decay
+7,180,0.00,72.0,baseline restored
