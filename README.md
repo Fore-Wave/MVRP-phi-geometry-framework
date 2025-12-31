@@ -129,11 +129,29 @@ MVRP-phi-geometry-framework/
 2. [Implementation Guide](docs/research/MVRP%20v1.3%20Complete%20Implementation%20Guide.pdf) – Detailed setup
 3. [Multi-AI Collaboration](docs/protocols/The%20Recursion%20Quintet_%20Multi-AI%20Collaborative%20Science%20key.pdf) – Framework context
 
-**Data Entry:**
-- Download [MVRP Dashboard](tools/mvrp_data_entry_dashboard.html)
-- Open in browser (works offline)
-- Enter measurements as you go
-- Export CSV when done
+**Data Collection:**
+
+**📊 MVRP Data Dashboard** (Download & Use Offline)
+
+⚠️ **Important:** GitHub shows the HTML code but doesn't run it. Here's how to actually use the dashboard:
+
+1. **Download Method 1:** Click [dashboard](tools/mvrp_data_entry_dashboard.html) → Look for **"Download raw file"** button (⬇️ icon, top right) → Click it
+2. **Download Method 2:** Right-click [this direct link](https://raw.githubusercontent.com/Fore-Wave/MVRP-phi-geometry-framework/main/tools/mvrp_data_entry_dashboard.html) → Select "Save Link As..."
+3. **Open:** Find downloaded file (in Downloads folder) → Double-click the .html file → Opens in your browser
+4. **Use:** Enter measurements during experiments (works completely offline!)
+5. **Export:** Click "Export CSV" button when done → Downloads .csv file for analysis
+
+**Dashboard Features:**
+- ✅ Works completely offline (no internet needed during bucket runs)
+- ✅ Saves data in browser local storage (survives refresh/close)
+- ✅ One-click CSV export (ready for Excel/Python/R)
+- ✅ Template-based entry (Electrolytic, Optical, Hybrid, Custom)
+- ✅ All data stays on your computer (private & secure)
+
+**Troubleshooting:**
+- If file shows code when opened: Make sure it has **.html** extension (not .txt)
+- Browser asks about storage: Click "Allow" - this saves your data locally (it's safe!)
+- Data persists even after closing browser (as long as you allowed local storage)
 
 ---
 
@@ -188,12 +206,6 @@ MVRP-phi-geometry-framework/
 **Historical Integration:**
 - Tesla, Bedini, Bearden, Searl, Brown, Meyer frameworks
 - See: [Historical Integration](docs/reference/)
-
-*& Naturally Recursive Flow states &*
-
-    -Such as that of a Time-Crystal
-    -or as seen in the Fibonacci Sequece of a shell
-    -and the constant flow in a rare earth magnet
 
 ---
 
@@ -311,7 +323,7 @@ See: [Historical Integration](docs/reference/)
 
 - **Harold Puthoff** – Polarizable Vacuum (PV) model
 - **Salvatore Pais** – Temporal Field Dynamics (TFD)
-- **Dan Winters - FractalU
+- **Dan Winters** - FractalU
 - **Wilhelm (Dr.)** – Zero-Point Energy analysis
 
 See: [Theoretical Integration](docs/theory/)
@@ -332,8 +344,6 @@ See: [Theoretical Integration](docs/theory/)
 - **Academic partnerships:** Contact via GitHub
 - **Media inquiries:** DOI citable, all materials open-access
 
-  *** data curator : Howell , Evan
-
 ### Feedback Welcome
 
 - ✅ Null results (equally valuable!)
@@ -343,7 +353,7 @@ See: [Theoretical Integration](docs/theory/)
 - ✅ Equipment modifications
 
 **Open science means open dialogue. All feedback improves the framework!**
-
+** or reach out to data procurator : Howell. Evan
 ---
 
 ## Acknowledgments
@@ -352,7 +362,7 @@ See: [Theoretical Integration](docs/theory/)
 The Fab Five: Claude, Grok, Qai, Llama, Perplexity
 
 ### Independent Reviewers
-Dr. Wilhelm (ZPE analysis, convergence mathematics) , also personal witness, synthesized experiments, and modeled reproduction
+Dr. Wilhelm (ZPE analysis, convergence mathematics), Personal witness, synthesized reproduction and digital modeling
 
 ### Open Science Community
 All who contribute replication attempts, critiques, and insights
