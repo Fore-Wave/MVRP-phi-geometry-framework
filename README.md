@@ -323,6 +323,7 @@ See: [Historical Integration](docs/reference/)
 
 - **Harold Puthoff** – Polarizable Vacuum (PV) model
 - **Salvatore Pais** – Temporal Field Dynamics (TFD)
+- **Frank Wilczek - CHROMOTECHNOLOGIST / Time Crystals
 - **Dan Winters** - FractalU
 - **Wilhelm (Dr.)** – Zero-Point Energy analysis
 
