@@ -1,6 +1,6 @@
 # MVRP Framework: φ-Geometry Effects on Physical Coherence
 
-[![DOI]([https://doi.org/10.5281/zenodo.18079209](https://zenodo.org/records/18167536))
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18079209.svg)](https://doi.org/10.5281/zenodo.18079209)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Open Science](https://img.shields.io/badge/Open-Science-blue.svg)](https://en.wikipedia.org/wiki/Open_science)
 
