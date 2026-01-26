@@ -393,6 +393,13 @@ All who contribute replication attempts, critiques, and insights
 
 ---
 
+## YouTube Video archive link
+*updating as i can 
+
+https://www.youtube.com/playlist?list=PLJQR71eWUwaqKFqut3jrQDGykjtTJOoSb
+
+---
+
 **Questions? Feedback? Replications?**  
 **Open a GitHub issue or cite the DOI!**
 
