@@ -1,1 +1,97 @@
+# MVRP Phlossary
+## Physics + Philosophy + Phenomena Glossary
 
+### What is the Phlossary?
+
+The **Phlossary** is an interdisciplinary glossary combining:
+- **Physics:** Hard science definitions (measurements, equations)
+- **Philosophy:** Conceptual frameworks (meaning, interpretation)  
+- **Phenomena:** Observed effects (what actually happens)
+
+Created in "Evanese" style - accessible technical language that bridges 
+mainstream physics with frontier concepts.
+
+### Contents
+
+**Rounds 1-3** (Full glossary, ~120 terms)
+- File: `phlossary_rounds_1-3.pdf`
+- Status: Complete
+- Coverage: Core concepts from Z-pinch, longitudinal waves, scalar phenomena, 
+  fractality, coherence, golden ratio, and more
+
+**Round 4** (Latest additions, ~30 terms)
+- File: `phlossary_round_4.pdf`
+- Status: Work in progress
+- New terms: Infinite-Gain Loop, Qualia, Retro-causality, Ebner Effect, 
+  Kowsky-Frost Crystal, Rodin Coil, and more
+
+**MVRP Core Subset** (15 most relevant terms)
+- File: `phlossary_mvrp_core.md`
+- Status: Active reference
+- Focus: Terms directly applicable to MVRP experiments
+
+### How to Use
+
+**For Quick Reference:**
+- Start with `phlossary_mvrp_core.md` (MVRP-specific terms)
+- Expand to full glossary as needed
+
+**For Deep Dive:**
+- Read Rounds 1-3 for comprehensive foundation
+- Check Round 4 for latest experimental concepts
+
+**For Collaboration:**
+- Share with new collaborators as onboarding resource
+- Provides common vocabulary across disciplines
+
+### Tier System
+
+Terms are classified by certainty level:
+
+- **Tier 1:** Established physics (Golden Ratio, Lorentz Force, Lenz's Law)
+- **Tier 2:** Testable hypotheses (Magneto-Acoustics, Electroacoustic Coupling)
+- **Tier 3:** Speculation (Retro-causality, Qualia, Charge Collapse)
+
+### Evolution
+
+The Phlossary is a living document:
+- Rounds 1-3: Foundation established
+- Round 4: In progress, adding MVRP-specific terms
+- Round 5: Planned additions based on experimental discoveries
+
+### Integration with MVRP
+
+Key Phlossary terms directly support MVRP framework:
+- φ-Spacing (golden ratio electrode geometry)
+- Magneto-Acoustics (magnetic + sonic induction)
+- Electro-Acoustics (acoustic → electric conversion)
+- Harmonic Inclusiveness (synergy mechanism)
+- Coherence (voltage persistence, beam collimation)
+
+See `phlossary_mvrp_core.md` for complete MVRP-relevant subset.
+
+### Attribution
+
+**Primary Author:** Evan (Evanese style)
+
+**Influences Acknowledged:**
+- Dan Winters (fractality, charge collapse, coherence)
+- Dave Rossi (Z-pinch research)
+- Brandon Thomas (kinetic learning)
+- James D Madden (Umwelt concept, Higherside Chats)
+
+**MVRP Integration:** Claude + Grok + Qai (Fab Five AI collaboration)
+
+### License
+
+Open science - freely shareable with attribution.
+
+### Contact
+
+Questions, corrections, or contributions welcome via MVRP GitHub issues.
+
+---
+
+**"Physics + Philosophy + Phenomena = Phlossary"**
+
+*Bridging disciplines, one term at a time.* ✨
