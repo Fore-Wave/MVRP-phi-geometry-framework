@@ -403,10 +403,20 @@ https://www.youtube.com/playlist?list=PLJQR71eWUwaqKFqut3jrQDGykjtTJOoSb
 **Questions? Feedback? Replications?**  
 **Open a GitHub issue or cite the DOI!**
 
+## 📬 Contact on X : https://x.com/EvanTheHowell
+
+
+**Replicate MVRP? Contribute data?** Open a [GitHub Issue](link)!
+
+**Share:** Data, equipment, observations, videos  
+**Credit:** All contributors named in publications
+
+**Status:** N=10+, seeking independent verification
+
 **The golden vacuum awaits measurement. The data will decide.** ⚡🌀
 
 ---
 
 *Open Science • Measurement-Only Claims • Reproducible Protocols • CC-BY 4.0*
 
-*Last Updated: December 29, 2025*
+*Last Updated: Febuary 16,2026*
