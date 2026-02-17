@@ -286,6 +286,34 @@ This framework was developed through collaborative ideation with five AI systems
 Howell, E. (2025). *MVRP Framework: φ-Geometry Effects on Physical Coherence - Comprehensive Dataset v3.1*. Zenodo. https://doi.org/10.5281/zenodo.18079209
 
 ---
+## Terminology Reference
+
+The MVRP framework uses specialized terminology defined in the **MVRP Phlossary** 
+(Physics + Philosophy + Phenomena glossary).
+
+**Phlossary Documentation:** Available in the GitHub repository at 
+`https://github.com/Fore-Wave/MVRP-phi-geometry-framework/tree/main/docs/phlossary`
+
+**Core MVRP Terms:**
+- **φ-Spacing:** Electrode separation at golden ratio (1.618:1)
+- **Magneto-Acoustics:** Acoustic stimulation inducing electromagnetic effects
+- **Synergy Index:** Ratio of combined effect to individual effects
+- **Coherence:** Measurable correlation in system state persistence
+- **Temporal Asymmetry Ratio:** Build time vs. decay time (R = τ_build / τ_decay)
+
+For complete definitions and 150+ interdisciplinary terms, see the Phlossary 
+documentation in the GitHub repository.
+
+**Tier Classification:** All Phlossary terms are labeled by certainty level:
+- Tier 1: Established physics (e.g., Golden Ratio, Lorentz Force)
+- Tier 2: Testable hypotheses (e.g., Electroacoustic Coupling)
+- Tier 3: Speculation (clearly labeled, parked for future exploration)
+
+This dataset maintains **Tier 1-2 claims only** (measurement-based, replicable). 
+Speculative concepts (Tier 3) are documented separately for inspiration but not 
+claimed as validated.
+
+---
 
 ## License
 
