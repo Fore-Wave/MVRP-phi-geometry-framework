@@ -433,6 +433,26 @@ https://www.youtube.com/playlist?list=PLJQR71eWUwaqKFqut3jrQDGykjtTJOoSb
 
 ## 📬 Contact on X : https://x.com/EvanTheHowell
 
+---
+
+## Background Research
+
+The MVRP framework builds on the author's multi-year investigation of 
+geometric effects in optical and electroacoustic systems.
+
+**Previous Work:**
+- Laser experiments (optical-acoustic coupling)
+- Documented: ~57 video recordings
+- Key finding: Bass hum from recursive laser interference in crystal-prism geometry
+- See: [Laser Background Summary](/docs/background/laser_experiments_summary.md)
+- Public playlist: [Laser Experiments](https://www.youtube.com/playlist?list=PLJQR71eWUwaqNvUR5V2DGuYbZyUCJghgE)
+
+---
+
+**Pattern:** Cross-domain energy transduction through geometric boundaries  
+**Phase 1:** Optical → Acoustic (laser experiments)  
+**Phase 2:** Acoustic → Electric (MVRP current work)
+
 
 **Replicate MVRP? Contribute data?** Open a [GitHub Issue](link)!
 
