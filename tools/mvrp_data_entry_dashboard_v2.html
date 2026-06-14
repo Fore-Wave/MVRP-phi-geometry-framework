@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MVRP Data Dashboard v2.0 | φ-Geometry Research</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --phi: 1.618033988749895;
+    --gold: #ffd700; --gold-dim: #c9a227; --gold-bg: rgba(255,215,0,0.08);
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d;
+    --border: #30363d; --text: #e6edf3; --text-dim: #8b949e;
+    --green: #3fb950; --red: #f85149; --blue: #58a6ff; --purple: #bc8cff; --orange: #ff8c00;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Courier New',monospace; min-height:100vh; }
+
+  /* HEADER */
+  header { background:linear-gradient(135deg,#0d1117,#161b22); border-bottom:1px solid var(--border); padding:20px 30px; display:flex; align-items:center; gap:20px; position:relative; overflow:hidden; }
+  header::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 0% 50%,rgba(255,215,0,0.06),transparent 50%); pointer-events:none; }
+  .header-icon { font-size:2.5rem; animation:spin 12s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .header-text h1 { font-size:1.6rem; color:var(--gold); text-shadow:0 0 15px rgba(255,215,0,0.3); }
+  .header-text p { color:var(--text-dim); font-size:0.8rem; margin-top:3px; }
+  .header-badges { margin-left:auto; display:flex; flex-direction:column; gap:5px; align-items:flex-end; }
+  .badge { font-size:0.65rem; padding:2px 10px; border-radius:20px; font-weight:bold; }
+  .badge-gold { background:var(--gold); color:#000; }
+  .badge-blue { background:rgba(88,166,255,0.2); border:1px solid var(--blue); color:var(--blue); }
+
+  /* LAYOUT */
+  .container { max-width:1300px; margin:0 auto; padding:24px; }
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+  .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  @media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+  /* CARDS */
+  .card { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:20px; }
+  .card-sm { padding:14px; }
+  .section-title { font-size:0.75rem; color:var(--gold); text-transform:uppercase; letter-spacing:0.12em; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .section-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--border),transparent); }
+
+  /* STAT CARDS */
+  .stat { background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:14px; }
+  .stat-label { font-size:0.7rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; }
+  .stat-value { font-size:1.8rem; color:var(--gold); font-weight:bold; margin:4px 0; }
+  .stat-sub { font-size:0.7rem; color:var(--text-dim); }
+  .stat-delta { font-size:0.72rem; }
+  .stat-delta.up { color:var(--green); }
+  .stat-delta.down { color:var(--red); }
+
+  /* FORMS */
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .form-group { display:flex; flex-direction:column; gap:5px; }
+  label { font-size:0.75rem; color:var(--text-dim); }
+  input,select,textarea {
+    background:var(--bg3); border:1px solid var(--border); color:var(--text);
+    padding:8px 10px; border-radius:5px; font-family:'Courier New',monospace; font-size:0.82rem;
+    transition:border-color 0.2s;
+  }
+  input:focus,select:focus,textarea:focus { outline:none; border-color:var(--gold); }
+  input[type=range] { padding:4px 0; cursor:pointer; accent-color:var(--gold); }
+  .form-hint { font-size:0.68rem; color:var(--text-dim); }
+
+  /* BUTTONS */
+  .btn { padding:9px 18px; border-radius:6px; cursor:pointer; font-size:0.8rem; font-family:'Courier New',monospace; border:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:6px; }
+  .btn-primary { background:var(--gold); color:#000; font-weight:bold; }
+  .btn-primary:hover { background:#ffed4a; box-shadow:0 0 12px rgba(255,215,0,0.3); }
+  .btn-secondary { background:var(--bg3); color:var(--text); border:1px solid var(--border); }
+  .btn-secondary:hover { border-color:var(--gold-dim); }
+  .btn-danger { background:rgba(248,81,73,0.12); color:var(--red); border:1px solid rgba(248,81,73,0.25); }
+  .btn-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+
+  /* DATA TABLE */
+  .table-wrap { overflow-x:auto; max-height:320px; overflow-y:auto; }
+  table { width:100%; border-collapse:collapse; font-size:0.75rem; }
+  th { background:var(--bg3); color:var(--text-dim); padding:8px 10px; text-align:left; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid var(--border); position:sticky; top:0; }
+  td { padding:8px 10px; border-bottom:1px solid rgba(48,54,61,0.4); }
+  tr:hover td { background:var(--gold-bg); }
+  .hit { color:var(--gold); font-weight:bold; }
+  .miss { color:var(--text-dim); }
+
+  /* PHI PROGRESS BARS */
+  .phi-bar { display:flex; align-items:center; gap:6px; }
+  .phi-track { flex:1; height:5px; background:var(--bg); border-radius:3px; overflow:hidden; }
+  .phi-fill { height:100%; background:linear-gradient(90deg,var(--gold),var(--orange)); border-radius:3px; transition:width 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+
+  /* CONDITION BUTTONS */
+  .cond-tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:16px; }
+  .cond-tab { padding:8px; text-align:center; border-radius:6px; cursor:pointer; font-size:0.72rem; border:1px solid var(--border); background:var(--bg3); color:var(--text-dim); transition:all 0.2s; }
+  .cond-tab:hover { border-color:var(--gold-dim); }
+  .cond-tab.active { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
+  .cond-tab .cond-icon { font-size:1.1rem; display:block; margin-bottom:3px; }
+
+  /* SYNERGY METER */
+  .synergy-wrap { display:flex; flex-direction:column; align-items:center; gap:10px; padding:10px; }
+  .synergy-ring { position:relative; width:110px; height:110px; }
+  .synergy-ring svg { transform:rotate(-90deg); }
+  .synergy-ring .ring-val { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:var(--gold); font-weight:bold; }
+  .synergy-label { font-size:0.75rem; color:var(--text-dim); text-align:center; }
+
+  /* NOTIFICATIONS */
+  .toast { position:fixed; bottom:20px; right:20px; background:var(--bg3); border:1px solid var(--border); padding:12px 18px; border-radius:8px; font-size:0.8rem; z-index:1000; animation:slideUp 0.3s ease; max-width:320px; }
+  .toast.success { border-color:var(--green); }
+  .toast.error { border-color:var(--red); }
+  @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width:5px; height:5px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+
+  .spacer { height:18px; }
+  .full-width { grid-column:1/-1; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-icon">🌀</div>
+  <div class="header-text">
+    <h1>MVRP Data Dashboard</h1>
+    <p>Minimum Viable Recursion Protocol · φ-Geometry Coherence Experiments</p>
+  </div>
+  <div class="header-badges">
+    <span class="badge badge-gold">v2.0</span>
+    <span class="badge badge-blue">φ = 1.618...</span>
+    <span id="sessionBadge" class="badge" style="background:rgba(63,185,80,0.15);border:1px solid var(--green);color:var(--green)">● Session Active</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- STAT ROW -->
+  <div class="grid-4" style="margin-bottom:18px">
+    <div class="stat">
+      <div class="stat-label">Trials Logged</div>
+      <div class="stat-value" id="statTrials">0</div>
+      <div class="stat-sub">this session</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Best Synergy</div>
+      <div class="stat-value" id="statBestSynergy">—</div>
+      <div class="stat-sub">φ+Acoustic vs baseline</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Avg φ-Hit Rate</div>
+      <div class="stat-value" id="statHitRate">—</div>
+      <div class="stat-sub">φ+Acoustic conditions</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Session N</div>
+      <div class="stat-value" id="statN">0</div>
+      <div class="stat-sub">target: N≥30</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+
+    <!-- LEFT: DATA ENTRY FORM -->
+    <div class="card">
+      <div class="section-title">⚗️ Trial Entry</div>
+
+      <!-- CONDITION SELECTOR -->
+      <div class="cond-tabs">
+        <div class="cond-tab active" data-cond="baseline" onclick="selectCond(this)">
+          <span class="cond-icon">📏</span>Baseline
+        </div>
+        <div class="cond-tab" data-cond="acoustic" onclick="selectCond(this)">
+          <span class="cond-icon">🎵</span>Acoustic Only
+        </div>
+        <div class="cond-tab" data-cond="phi" onclick="selectCond(this)">
+          <span class="cond-icon">φ</span>φ-Spacing Only
+        </div>
+        <div class="cond-tab" data-cond="phi_acoustic" onclick="selectCond(this)">
+          <span class="cond-icon">⚡</span>φ + Acoustic
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Trial Number</label>
+          <input type="number" id="trialNum" value="8" min="1">
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="trialDate">
+        </div>
+        <div class="form-group">
+          <label>Voltage — Baseline (V)</label>
+          <input type="number" id="voltBase" step="0.001" placeholder="e.g. 2.340">
+        </div>
+        <div class="form-group">
+          <label>Voltage — Peak (V)</label>
+          <input type="number" id="voltPeak" step="0.001" placeholder="e.g. 8.160">
+        </div>
+        <div class="form-group">
+          <label>Build Time (seconds)</label>
+          <input type="number" id="buildTime" step="0.1" placeholder="e.g. 4.5">
+        </div>
+        <div class="form-group">
+          <label>Decay Time (seconds)</label>
+          <input type="number" id="decayTime" step="0.1" placeholder="e.g. 6.2">
+        </div>
+        <div class="form-group">
+          <label>Electrode Spacing (cm)</label>
+          <input type="number" id="spacing" step="0.01" placeholder="e.g. 6.18 (φ×~3.8)">
+        </div>
+        <div class="form-group">
+          <label>Acoustic Freq (Hz)</label>
+          <input type="number" id="freq" value="528" step="0.1">
+        </div>
+        <div class="form-group">
+          <label>Bubble Coherence Score (0–10)</label>
+          <input type="range" id="bubbleScore" min="0" max="10" step="1" value="5" oninput="document.getElementById('bubbleVal').textContent=this.value">
+          <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-dim)">
+            <span>0</span><span id="bubbleVal">5</span><span>10</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Laser Collimation Δ (%)</label>
+          <input type="number" id="laserDelta" step="0.1" placeholder="e.g. 30 for 30% reduction">
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:10px">
+        <label>Notes / Observations</label>
+        <textarea id="notes" rows="2" placeholder="Any anomalies, equipment issues, visual observations..."></textarea>
+      </div>
+
+      <!-- LIVE φ RATIO PREVIEW -->
+      <div style="background:var(--bg3);border-radius:6px;padding:12px;margin-top:14px;font-size:0.78rem;">
+        <div style="color:var(--text-dim);margin-bottom:8px;font-size:0.7rem;">LIVE METRICS PREVIEW</div>
+        <div class="phi-bar" style="margin-bottom:6px">
+          <span style="width:120px;color:var(--text-dim)">Synergy Index:</span>
+          <div class="phi-track"><div class="phi-fill" id="prevSynergy" style="width:0%"></div></div>
+          <span id="prevSynergyVal" style="min-width:40px;text-align:right;color:var(--gold)">—</span>
+        </div>
+        <div class="phi-bar" style="margin-bottom:6px">
+          <span style="width:120px;color:var(--text-dim)">Temporal Ratio R:</span>
+          <div class="phi-track"><div class="phi-fill" id="prevR" style="width:0%;background:linear-gradient(90deg,var(--blue),var(--purple))"></div></div>
+          <span id="prevRVal" style="min-width:40px;text-align:right;color:var(--blue)">—</span>
+        </div>
+        <div style="font-size:0.68rem;color:var(--text-dim);margin-top:6px">Synergy = Peak/Baseline. R = Build/Decay. φ=1.618 target.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="logTrial()">⚡ Log Trial</button>
+        <button class="btn btn-secondary" onclick="clearForm()">↺ Clear Form</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: SYNERGY METER + CHARTS -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+      <!-- SYNERGY RING -->
+      <div class="card card-sm">
+        <div class="section-title">⚡ Synergy Index</div>
+        <div style="display:flex;gap:20px;align-items:center;">
+          <div class="synergy-wrap">
+            <div class="synergy-ring">
+              <svg viewBox="0 0 110 110" width="110" height="110">
+                <circle cx="55" cy="55" r="45" fill="none" stroke="var(--bg3)" stroke-width="10"/>
+                <circle id="synergyRing" cx="55" cy="55" r="45" fill="none" stroke="var(--gold)" stroke-width="10"
+                  stroke-dasharray="283" stroke-dashoffset="283" stroke-linecap="round"
+                  style="transition:stroke-dashoffset 1s cubic-bezier(0.34,1.56,0.64,1)"/>
+              </svg>
+              <div class="ring-val" id="synergyRingVal">—</div>
+            </div>
+            <div class="synergy-label">φ+Acoustic / Baseline</div>
+          </div>
+          <div style="flex:1;font-size:0.75rem;">
+            <div style="margin-bottom:8px">
+              <div style="color:var(--text-dim);font-size:0.68rem;margin-bottom:3px">MVRP N=7 Reference</div>
+              <div class="phi-bar">
+                <div class="phi-track"><div class="phi-fill" style="width:87.5%"></div></div>
+                <span style="color:var(--gold);font-size:0.78rem">3.5×</span>
+              </div>
+            </div>
+            <div>
+              <div style="color:var(--text-dim);font-size:0.68rem;margin-bottom:3px">This Session Avg</div>
+              <div class="phi-bar">
+                <div class="phi-track"><div class="phi-fill" id="sessionAvgBar" style="width:0%"></div></div>
+                <span id="sessionAvgVal" style="color:var(--gold);font-size:0.78rem">—</span>
+              </div>
+            </div>
+            <div style="margin-top:10px;font-size:0.68rem;color:var(--text-dim)">
+              <div>Baseline: <span id="refBaseline" style="color:var(--text)">—</span></div>
+              <div>φ+Acoustic: <span id="refPhiAcoustic" style="color:var(--gold)">—</span></div>
+              <div>R (build/decay): <span id="refR" style="color:var(--blue)">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VOLTAGE CHART -->
+      <div class="card card-sm" style="flex:1;">
+        <div class="section-title">📈 Voltage by Condition</div>
+        <canvas id="voltChart" height="150"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <!-- DATA TABLE -->
+  <div class="card full-width">
+    <div class="section-title">📋 Trial Log</div>
+    <div class="table-wrap">
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>#</th><th>Date</th><th>Condition</th><th>Volt Base</th><th>Volt Peak</th>
+            <th>Synergy</th><th>Build(s)</th><th>Decay(s)</th><th>R</th>
+            <th>Bubble /10</th><th>Laser Δ%</th><th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="12" style="text-align:center;padding:20px;color:var(--text-dim);">No trials logged yet. Use the form above to add your first entry.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="btn-row" style="margin-top:14px">
+      <button class="btn btn-primary" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="btn btn-secondary" onclick="exportJSON()">⬇ Export JSON</button>
+      <button class="btn btn-secondary" onclick="importCSV()">⬆ Import CSV</button>
+      <input type="file" id="csvImport" accept=".csv" style="display:none" onchange="handleImport(event)">
+      <button class="btn btn-danger" onclick="clearAllData()">✕ Clear All Data</button>
+      <span id="exportLabel" style="font-size:0.72rem;color:var(--text-dim);align-self:center;"></span>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <!-- CHARTS ROW -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="section-title">📊 Condition Comparison</div>
+      <canvas id="condChart" height="200"></canvas>
+    </div>
+    <div class="card">
+      <div class="section-title">🌀 Temporal Ratio (R = Build/Decay)</div>
+      <canvas id="rChart" height="200"></canvas>
+      <div style="font-size:0.68rem;color:var(--text-dim);margin-top:8px">
+        Pais TFD predicts R&gt;1.5 (slow build, fast decay). Observed R≈0.6–0.75 historically. φ=1.618 is the target.
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <!-- ANALYSIS PANEL -->
+  <div class="card full-width">
+    <div class="section-title">🔬 Auto-Analysis</div>
+    <div id="analysisPanel" style="font-size:0.8rem;line-height:1.9;color:var(--text-dim);">
+      Log at least 4 trials (one per condition) to see automatic analysis.
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:30px;font-size:0.72rem;color:var(--text-dim)">
+    MVRP Data Dashboard v2.0 · <a href="https://github.com/Fore-Wave/MVRP-phi-geometry-framework" style="color:var(--gold)">GitHub</a> ·
+    <a href="https://doi.org/10.5281/zenodo.18079209" style="color:var(--blue)">DOI 10.5281/zenodo.18079209</a> ·
+    Works 100% offline · Data stored in browser · MIT License
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// MVRP DASHBOARD v2.0 — CORE
+// ═══════════════════════════════════════════════════════
+
+const PHI = 1.618033988749895;
+let trials = JSON.parse(localStorage.getItem('mvrp_trials_v2') || '[]');
+let currentCond = 'baseline';
+let voltChart, condChart, rChart;
+
+// ── INIT ──
+document.getElementById('trialDate').valueAsDate = new Date();
+if (trials.length) document.getElementById('trialNum').value = Math.max(...trials.map(t => t.num)) + 1;
+renderAll();
+
+// ── CONDITION SELECT ──
+function selectCond(el) {
+  document.querySelectorAll('.cond-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentCond = el.dataset.cond;
+  const freqInput = document.getElementById('freq');
+  const spacingInput = document.getElementById('spacing');
+  if (currentCond === 'baseline') { freqInput.value = '0'; spacingInput.value = ''; }
+  else if (currentCond === 'acoustic') { freqInput.value = '528'; spacingInput.value = ''; }
+  else if (currentCond === 'phi') { freqInput.value = '0'; spacingInput.value = '6.18'; }
+  else if (currentCond === 'phi_acoustic') { freqInput.value = '528'; spacingInput.value = '6.18'; }
+}
+
+// ── LIVE PREVIEW ──
+['voltBase','voltPeak','buildTime','decayTime'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updatePreview);
+});
+function updatePreview() {
+  const base = parseFloat(document.getElementById('voltBase').value);
+  const peak = parseFloat(document.getElementById('voltPeak').value);
+  const build = parseFloat(document.getElementById('buildTime').value);
+  const decay = parseFloat(document.getElementById('decayTime').value);
+  if (base > 0 && peak > 0) {
+    const synergy = peak / base;
+    const pct = Math.min(100, (synergy / 5) * 100);
+    document.getElementById('prevSynergy').style.width = pct + '%';
+    document.getElementById('prevSynergyVal').textContent = synergy.toFixed(2) + '×';
+  }
+  if (build > 0 && decay > 0) {
+    const R = build / decay;
+    const pct = Math.min(100, (R / 3) * 100);
+    document.getElementById('prevR').style.width = pct + '%';
+    document.getElementById('prevRVal').textContent = 'R=' + R.toFixed(3);
+  }
+}
+
+// ── LOG TRIAL ──
+function logTrial() {
+  const base = parseFloat(document.getElementById('voltBase').value);
+  const peak = parseFloat(document.getElementById('voltPeak').value);
+  const build = parseFloat(document.getElementById('buildTime').value);
+  const decay = parseFloat(document.getElementById('decayTime').value);
+  if (isNaN(base) || isNaN(peak)) { showToast('⚠️ Volt Baseline and Peak are required.', 'error'); return; }
+
+  const trial = {
+    id: Date.now(),
+    num: parseInt(document.getElementById('trialNum').value),
+    date: document.getElementById('trialDate').value,
+    condition: currentCond,
+    voltBase: base, voltPeak: peak,
+    synergy: peak / base,
+    buildTime: isNaN(build) ? null : build,
+    decayTime: isNaN(decay) ? null : decay,
+    R: (!isNaN(build) && !isNaN(decay) && decay > 0) ? build / decay : null,
+    spacing: parseFloat(document.getElementById('spacing').value) || null,
+    freq: parseFloat(document.getElementById('freq').value) || 0,
+    bubbleScore: parseInt(document.getElementById('bubbleScore').value),
+    laserDelta: parseFloat(document.getElementById('laserDelta').value) || null,
+    notes: document.getElementById('notes').value.trim(),
+  };
+
+  trials.push(trial);
+  save();
+  renderAll();
+  document.getElementById('trialNum').value = trial.num + 1;
+  clearForm();
+  showToast(`✅ Trial #${trial.num} logged (${formatCond(trial.condition)})`, 'success');
+}
+
+function clearForm() {
+  ['voltBase','voltPeak','buildTime','decayTime','laserDelta','notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('spacing').value = '';
+  document.getElementById('bubbleScore').value = 5;
+  document.getElementById('bubbleVal').textContent = '5';
+  document.getElementById('prevSynergy').style.width = '0%';
+  document.getElementById('prevSynergyVal').textContent = '—';
+  document.getElementById('prevR').style.width = '0%';
+  document.getElementById('prevRVal').textContent = '—';
+}
+
+function clearAllData() {
+  if (!confirm('Clear ALL trial data? This cannot be undone.')) return;
+  trials = [];
+  save();
+  renderAll();
+  showToast('All data cleared.', 'error');
+}
+
+function save() { localStorage.setItem('mvrp_trials_v2', JSON.stringify(trials)); }
+
+// ── RENDER ALL ──
+function renderAll() {
+  renderStats();
+  renderTable();
+  renderSynergyMeter();
+  renderVoltChart();
+  renderCondChart();
+  renderRChart();
+  renderAnalysis();
+}
+
+function formatCond(c) {
+  return {baseline:'Baseline',acoustic:'Acoustic Only',phi:'φ-Spacing',phi_acoustic:'φ+Acoustic'}[c] || c;
+}
+
+// ── STATS ──
+function renderStats() {
+  document.getElementById('statTrials').textContent = trials.length;
+  document.getElementById('statN').textContent = trials.length;
+  const phiAcoustic = trials.filter(t => t.condition === 'phi_acoustic');
+  const baselines = trials.filter(t => t.condition === 'baseline');
+  if (phiAcoustic.length && baselines.length) {
+    const avgPA = avg(phiAcoustic.map(t => t.synergy));
+    const avgBase = avg(baselines.map(t => t.voltPeak / (baselines[0].voltBase || 1)));
+    document.getElementById('statBestSynergy').textContent = Math.max(...phiAcoustic.map(t => t.synergy)).toFixed(2) + '×';
+    document.getElementById('statHitRate').textContent = avgPA.toFixed(2) + '×';
+  }
+}
+
+// ── TABLE ──
+function renderTable() {
+  const tbody = document.getElementById('tableBody');
+  if (!trials.length) {
+    tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:20px;color:var(--text-dim);">No trials logged yet.</td></tr>';
+    document.getElementById('exportLabel').textContent = '';
+    return;
+  }
+  tbody.innerHTML = [...trials].reverse().map(t => `
+    <tr>
+      <td style="color:var(--text-dim)">${t.num}</td>
+      <td>${t.date}</td>
+      <td style="color:${t.condition==='phi_acoustic'?'var(--gold)':t.condition==='phi'?'var(--purple)':t.condition==='acoustic'?'var(--blue)':'var(--text-dim)'}">
+        ${formatCond(t.condition)}
+      </td>
+      <td>${t.voltBase?.toFixed(3) ?? '—'}</td>
+      <td>${t.voltPeak?.toFixed(3) ?? '—'}</td>
+      <td class="${t.synergy >= 2 ? 'hit' : ''}">${t.synergy?.toFixed(3) ?? '—'}×</td>
+      <td>${t.buildTime ?? '—'}</td>
+      <td>${t.decayTime ?? '—'}</td>
+      <td style="color:${t.R && Math.abs(t.R - PHI) < 0.1 ? 'var(--gold)' : 'var(--text-dim)'}">
+        ${t.R?.toFixed(3) ?? '—'}
+      </td>
+      <td>${t.bubbleScore}/10</td>
+      <td>${t.laserDelta != null ? t.laserDelta + '%' : '—'}</td>
+      <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-dim);font-size:0.7rem">${t.notes || '—'}</td>
+    </tr>
+  `).join('');
+  document.getElementById('exportLabel').textContent = `${trials.length} trial(s) in memory`;
+}
+
+// ── SYNERGY METER ──
+function renderSynergyMeter() {
+  const phiAcoustic = trials.filter(t => t.condition === 'phi_acoustic');
+  const baselines = trials.filter(t => t.condition === 'baseline');
+  if (!phiAcoustic.length || !baselines.length) return;
+
+  const avgPA = avg(phiAcoustic.map(t => t.voltPeak));
+  const avgBase = avg(baselines.map(t => t.voltPeak));
+  const synergy = avgBase > 0 ? avgPA / avgBase : 1;
+  const maxSynergy = 5;
+  const pct = Math.min(100, (synergy / maxSynergy) * 100);
+  const offset = 283 * (1 - pct / 100);
+  document.getElementById('synergyRing').setAttribute('stroke-dashoffset', offset);
+  document.getElementById('synergyRingVal').textContent = synergy.toFixed(2) + '×';
+  document.getElementById('sessionAvgBar').style.width = Math.min(100, (synergy / 3.5) * 100) + '%';
+  document.getElementById('sessionAvgVal').textContent = synergy.toFixed(2) + '×';
+  document.getElementById('refBaseline').textContent = avgBase.toFixed(3) + 'V';
+  document.getElementById('refPhiAcoustic').textContent = avgPA.toFixed(3) + 'V';
+
+  const rVals = phiAcoustic.filter(t => t.R).map(t => t.R);
+  if (rVals.length) document.getElementById('refR').textContent = avg(rVals).toFixed(3);
+}
+
+// ── CHARTS ──
+function renderVoltChart() {
+  const ctx = document.getElementById('voltChart').getContext('2d');
+  if (voltChart) voltChart.destroy();
+  const labels = trials.map(t => `#${t.num}`);
+  voltChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Peak Voltage', data: trials.map(t => t.voltPeak), borderColor: '#ffd700', backgroundColor: 'rgba(255,215,0,0.1)', tension: 0.4, fill: true, pointRadius: 4 },
+        { label: 'Baseline Voltage', data: trials.map(t => t.voltBase), borderColor: '#58a6ff', backgroundColor: 'rgba(88,166,255,0.05)', tension: 0.4, fill: true, pointRadius: 3, borderDash: [4,3] }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#8b949e', font: { family: 'Courier New', size: 10 } } } },
+      scales: {
+        x: { ticks: { color: '#8b949e', font: { size: 9 } }, grid: { color: '#21262d' } },
+        y: { ticks: { color: '#8b949e', font: { size: 9 } }, grid: { color: '#21262d' } }
+      }
+    }
+  });
+}
+
+function renderCondChart() {
+  const ctx = document.getElementById('condChart').getContext('2d');
+  if (condChart) condChart.destroy();
+  const conds = ['baseline','acoustic','phi','phi_acoustic'];
+  const condLabels = ['Baseline','Acoustic Only','φ-Spacing','φ+Acoustic'];
+  const condColors = ['#8b949e','#58a6ff','#bc8cff','#ffd700'];
+  const data = conds.map(c => {
+    const ts = trials.filter(t => t.condition === c);
+    return ts.length ? avg(ts.map(t => t.voltPeak)) : null;
+  });
+  condChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: condLabels,
+      datasets: [{ label: 'Avg Peak Voltage (V)', data, backgroundColor: condColors.map(c => c + '99'), borderColor: condColors, borderWidth: 2, borderRadius: 4 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#8b949e', font: { size: 9 } }, grid: { color: '#21262d' } },
+        y: { ticks: { color: '#8b949e', font: { size: 9 } }, grid: { color: '#21262d' }, beginAtZero: true }
+      }
+    }
+  });
+}
+
+function renderRChart() {
+  const ctx = document.getElementById('rChart').getContext('2d');
+  if (rChart) rChart.destroy();
+  const ts = trials.filter(t => t.R !== null);
+  if (!ts.length) return;
+  rChart = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label: 'R = Build/Decay',
+        data: ts.map((t,i) => ({ x: i + 1, y: t.R })),
+        backgroundColor: ts.map(t => Math.abs(t.R - PHI) < 0.1 ? '#ffd700' : '#bc8cff'),
+        pointRadius: 6
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        annotation: { annotations: {
+          phiLine: { type: 'line', yMin: PHI, yMax: PHI, borderColor: '#ffd700', borderWidth: 1, borderDash: [5,5], label: { content: 'φ=1.618', display: true, color: '#ffd700', font: { size: 9 } } }
+        }}
+      },
+      scales: {
+        x: { ticks: { color: '#8b949e', font: { size: 9 } }, grid: { color: '#21262d' }, title: { display: true, text: 'Trial #', color: '#8b949e', font: { size: 9 } } },
+        y: { ticks: { color: '#8b949e', font: { size: 9 } }, grid: { color: '#21262d' }, min: 0 }
+      }
+    }
+  });
+}
+
+// ── AUTO-ANALYSIS ──
+function renderAnalysis() {
+  const panel = document.getElementById('analysisPanel');
+  if (trials.length < 4) { panel.textContent = 'Log at least 4 trials (one per condition) to see automatic analysis.'; return; }
+  const byC = {};
+  ['baseline','acoustic','phi','phi_acoustic'].forEach(c => { byC[c] = trials.filter(t => t.condition === c); });
+  const lines = [];
+  lines.push(`<span style="color:var(--text)"><strong>Trial Summary</strong> — ${trials.length} trials logged, ${new Set(trials.map(t => t.date)).size} session days.</span>`);
+  ['baseline','acoustic','phi','phi_acoustic'].forEach(c => {
+    const ts = byC[c];
+    if (!ts.length) return;
+    const avgV = avg(ts.map(t => t.voltPeak));
+    const avgS = avg(ts.map(t => t.synergy));
+    lines.push(`<span style="color:${c==='phi_acoustic'?'var(--gold)':c==='phi'?'var(--purple)':c==='acoustic'?'var(--blue)':'var(--text-dim)'}">${formatCond(c)}: N=${ts.length}, avg peak=${avgV.toFixed(3)}V, avg synergy=${avgS.toFixed(3)}×</span>`);
+  });
+  if (byC.baseline.length && byC.phi_acoustic.length) {
+    const baseAvg = avg(byC.baseline.map(t => t.voltPeak));
+    const paAvg = avg(byC.phi_acoustic.map(t => t.voltPeak));
+    const ratio = paAvg / baseAvg;
+    lines.push(`<span style="color:var(--gold)">⚡ φ+Acoustic vs Baseline: <strong>${ratio.toFixed(3)}×</strong> ${ratio > 3 ? '(exceeds N=7 reference of 3.5×!)' : ratio > 1.5 ? '(moderate synergy detected)' : '(weak or no synergy)'}</span>`);
+  }
+  const rVals = trials.filter(t => t.R !== null).map(t => t.R);
+  if (rVals.length) {
+    const avgR = avg(rVals);
+    lines.push(`Temporal Ratio R avg: ${avgR.toFixed(3)} (φ=1.618, Pais TFD predicts R>1.5)`);
+  }
+  const bubbles = trials.filter(t => t.condition === 'phi_acoustic').map(t => t.bubbleScore);
+  if (bubbles.length) {
+    const baseline_bubbles = trials.filter(t => t.condition === 'baseline').map(t => t.bubbleScore);
+    lines.push(`Bubble Coherence: φ+Acoustic avg=${avg(bubbles).toFixed(1)}/10 vs Baseline avg=${avg(baseline_bubbles||[0]).toFixed(1)}/10`);
+  }
+  panel.innerHTML = lines.join('<br>');
+}
+
+// ── EXPORT / IMPORT ──
+function exportCSV() {
+  if (!trials.length) { showToast('No data to export', 'error'); return; }
+  const h = ['num','date','condition','voltBase','voltPeak','synergy','buildTime','decayTime','R','bubbleScore','laserDelta','freq','spacing','notes'];
+  const rows = trials.map(t => h.map(k => `"${t[k] ?? ''}"`).join(','));
+  download(`mvrp_trials_v2_${Date.now()}.csv`, [h.join(','), ...rows].join('\n'), 'text/csv');
+  showToast(`⬇ Exported ${trials.length} trials as CSV`, 'success');
+}
+function exportJSON() {
+  if (!trials.length) { showToast('No data to export', 'error'); return; }
+  download(`mvrp_trials_v2_${Date.now()}.json`, JSON.stringify({ version:'2.0', phi: PHI, doi:'10.5281/zenodo.18079209', exported: new Date().toISOString(), trials }, null, 2), 'application/json');
+  showToast(`⬇ Exported ${trials.length} trials as JSON`, 'success');
+}
+function importCSV() { document.getElementById('csvImport').click(); }
+function handleImport(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const lines = ev.target.result.split('\n').filter(Boolean);
+    const headers = lines[0].split(',').map(h => h.replace(/"/g,'').trim());
+    const imported = lines.slice(1).map(line => {
+      const vals = line.split(',').map(v => v.replace(/"/g,'').trim());
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = vals[i] === '' ? null : isNaN(vals[i]) ? vals[i] : parseFloat(vals[i]); });
+      if (!obj.id) obj.id = Date.now() + Math.random();
+      return obj;
+    });
+    trials = [...trials, ...imported];
+    save(); renderAll();
+    showToast(`⬆ Imported ${imported.length} trials`, 'success');
+  };
+  reader.readAsText(file);
+}
+
+function download(name, content, mime) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type: mime }));
+  a.download = name; a.click();
+}
+
+// ── TOAST ──
+function showToast(msg, type = 'success') {
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+// ── UTILS ──
+function avg(arr) { return arr.length ? arr.reduce((a,b) => a + b, 0) / arr.length : 0; }
+</script>
+</body>
+</html>
