@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "MVRP Framework: φ-Geometry Effects on Physical Coherence"
+version: 3.3.0
+date-released: 2026-10-31
+authors:
+  - family-names: Howell
+    given-names: Evan
+    affiliation: "Fore-Wave (independent)"
+doi: 10.5281/zenodo.18079209
+license:
+  - MIT
+  - CC-BY-4.0
+repository-code: "https://github.com/Fore-Wave/MVRP-phi-geometry-framework"
+keywords:
+  - golden ratio
+  - coherence
+  - open science
+  - replication
