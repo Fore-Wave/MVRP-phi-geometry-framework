@@ -317,7 +317,9 @@ claimed as validated.
 
 ## License
 
-**MIT License** – See [LICENSE](LICENSE) file
+**Code:** MIT License – see [LICENSE](LICENSE). **Data and documents** (`data/`, `docs/`, papers and protocols): CC-BY 4.0.
+
+**Cite:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23850267.svg)](https://doi.org/10.5281/zenodo.23850267) · or use "Cite this repository" on GitHub (CITATION.cff)
 
 ### Permissions
 - ✅ Commercial use
@@ -465,6 +467,6 @@ geometric effects in optical and electroacoustic systems.
 
 ---
 
-*Open Science • Measurement-Only Claims • Reproducible Protocols • CC-BY 4.0*
+*Open Science • Measurement-Only Claims • Reproducible Protocols • Code MIT · Data & docs CC-BY 4.0*
 
 *Last Updated: Febuary 16,2026*
