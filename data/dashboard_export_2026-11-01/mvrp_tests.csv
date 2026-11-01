@@ -1,0 +1,10 @@
+id,test,purpose,resolves,cost,duration,priority,status
+T1,High-res voltage logging,Asymmetry ratio R = τ_build/τ_decay,Pais asymmetry (preliminary R=0.75 contradicts),$0,2 h,Critical,Ready
+T2,LCR capacitance,C_φ/C_baseline vs geometric 0.610,Ordinary capacitance vs Puthoff PV,$50–100,1 h,Critical,Needs meter
+T3,Frequency sweep + audio FFT,Peak at 854 Hz (528×φ)?,φ-harmonic / time-crystal analog,$0,2 h,Critical,Ready
+T4,Laser replication N=5→10,"Repeat optical result, with IR thermometer",Cross-domain claim; thermal refraction,$0,1 h,High,Ready
+T5,Slow-motion bubble video,"Helix angle and rise time, measured",Turns the 15° helix from qualitative to a number,$0,1 h,Medium,Ready
+T6,Electrode material swap,Graphite or platinum instead of steel,Electrochemistry artifact,$40,3 h,Medium,Not started
+T7,Piezo stress measurement,"Piezo disk voltage, φ vs baseline",Acoustic stress coherence,$10,1 h,Medium,Equipment ordered
+T8,Blinded N≥30 run,"Spacings labelled A/B, third party unblinds",Experimenter bias; real p-values,$0,3 days,Critical,Not started
+T9,Sealed-lid thermal control,"Lid, humidity meter, ±0.01°C probe",Evaporation vs real cooling,$30,2 h,Low,Not started
