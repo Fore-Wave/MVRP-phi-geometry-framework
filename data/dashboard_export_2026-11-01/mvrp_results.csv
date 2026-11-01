@@ -1,0 +1,9 @@
+metric,domain,unit,better,baseline,acoustic_only,phi_only,phi_acoustic,uplift,n,confidence
+Voltage during drive,Electrical,V,higher,0.0,0.02,0.0,0.07,3.5×,6,Medium
+Decay time τ,Electrical,s,higher,,25,,60,2.4×,6,Medium
+Bubble pattern score,Acoustic,/10,higher,2,4,3,7,3.5×,6,Low · subjective scoring
+Helix angle,Acoustic,°,higher,0,5,3,15,5×,6,Low · qualitative
+Laser spot diameter,Optical,mm,lower,5.0,4.8,4.9,3.5,30% tighter,5,Low-medium
+Laser deflection,Optical,°,higher,0.0,1.0,0.8,5.0,5×,5,Low-medium
+Laser intensity,Optical,rel,higher,100,105,98,140,40%,5,Low-medium
+Temperature change,Thermal,°F,lower,0.0,-0.5,0.0,-0.3,Unclear,6,Very low · at noise floor
