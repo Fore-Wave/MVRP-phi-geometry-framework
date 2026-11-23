@@ -1,0 +1,8 @@
+entry,date,condition,phi_ratio,acoustic_hz,laser_nm,logged_peak_v_archived,in_cell_peak_v,tau_build_s,tau_decay_s,duplicate_of,flags,recording,notes
+1,2025-12-02,baseline,1.0,0,,0.02,0.02,25,25,,bucket_leak;unblinded;10s_resolution,filmed_no_public_link,first trial
+2,2025-12-06,acoustic_only,1.0,528,,0.02,0.02,30,30,,bucket_leak;unblinded;10s_resolution,filmed_no_public_link,
+3,2025-12-16,phi_only,1.618,0,,0.03,0.03,35,40,,bucket_leak;unblinded;10s_resolution,filmed_no_public_link,geometry not fully specified (see paper 2.1)
+4,2025-12-18,phi_acoustic,1.618,528,650,0.07,0.07,60,90,,bucket_leak;unblinded;10s_resolution;single_0.810V_reading_T2.5,https://youtu.be/Jqnfv39cg2U,0.810 V single reading at 90 s kept as exploratory only
+5,2025-12-18,phi_acoustic,1.618,528,650,0.07,0.07,60,90,4,probable_duplicate;exclude_from_counts,https://youtu.be/Jqnfv39cg2U,identical to entry 4 in every field and same video
+6,2025-12-20,phi_acoustic,1.618,528,532,9.36,0.05,60,100,,excluded_battery_readings(9.34V;9.36V;14V);unblinded;10s_resolution,https://youtu.be/nsMywSK1ZWc,in-cell value from time series; 9.3 V readings are the battery itself
+7,2025-12-26,phi_acoustic,1.618,528,532,9.36,0.05,60,100,,excluded_battery_readings(9.36V);unblinded;10s_resolution,filmed_no_public_link,in-cell value from time series; fork orientation affected readings
