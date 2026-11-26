@@ -470,3 +470,16 @@ geometric effects in optical and electroacoustic systems.
 *Open Science • Measurement-Only Claims • Reproducible Protocols • Code MIT · Data & docs CC-BY 4.0*
 
 *Last Updated: Febuary 16,2026*
+
+## Stage 1 code and data (Nov 2026)
+
+| Path | What it is | Check it |
+|---|---|---|
+| `tools/field-kit/mvrp_rules.py` | Decision hierarchy, schedules, S1, S1c and C0 analysis, sample-size algorithm | `python mvrp_rules.py selftest` |
+| `tools/field-kit/blind_assistant.py` | Edge-test runner and analysis; `calibrate` reproduces `CALIBRATION.json` (z = 3.06) | `python blind_assistant.py selftest` |
+| `tools/field-kit/golden_lock.py` | Golden-mean locking test (positive control) | `python golden_lock.py selftest` |
+| `tools/field-kit/` field cards, log sheets, striker sketch | Offline field kit for the edge test | — |
+| `data/historical/pilot_corrected.csv` | Audited Dec 2025 pilot values | see `CORRECTIONS.md` |
+| `data/overlay/` | Field Desk overlay: entries, claims, theme matrix, `null_model.py`, `rater_agreement.py` | `python null_model.py`, `python rater_agreement.py selftest` |
+
+`data/dashboard_export_2026-11-01/` predates the audit and is kept only for the record (see its `SUPERSEDED.md`).

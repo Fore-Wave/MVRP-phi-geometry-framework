@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MVRP Edge-Test Blind Assistant · v1.1 (revised after XReview 1756756f, 23 Nov 2026)
+MVRP Edge-Test Blind Assistant · v1.2 (revised after XReview 29771c7e, 24 Nov 2026)
 ===================================================================================
 Runs the edge test (paper section 5.1) alone, with the PiezoPhire blinded by script.
 
@@ -11,8 +11,10 @@ Runs the edge test (paper section 5.1) alone, with the PiezoPhire blinded by scr
   * Pink noise from a separate speaker masks device sound.
   * MASKING GATE (instrument, not your guesses): with --mic, the masking check records
     the room at the nearest mark with the device on vs off. Masking holds when no 1/3-octave
-    band from 50 Hz to about 14 kHz differs by 1 dB or more. Your on/off guesses are logged
-    as a diagnostic only, because a real sensation could legitimately inform them.
+    band from 50 Hz to 20 kHz differs by 1 dB or more, both in the steady state and in the
+    1 s right after the device switches (switching transients). This is an operational
+    acoustic check, not proof that no cue exists. Your on/off guesses are logged as a
+    diagnostic only, because a real sensation could legitimately inform them.
   * Before the next trial the room must fall back to within 1 dB of the noise floor
     (mic), or a fixed wait is used (30 s after bowl trials, 15 s otherwise).
   * `summary` applies the pre-registered rule (paper 4.5 and 5.1) and prints the verdict.
@@ -21,9 +23,10 @@ Modes
   devices    list audio devices
   maskcheck  masking gate (mic) + 20-trial guess diagnostic, no bowl
   walk       Phase 1, exploratory: 4 Latin-square rounds x 4 conditions x Out/In = 32 trials
-  fixed      Phase 2, confirmatory: 4 blocks x 4 conditions x 8 marks = 128 trials
+  fixed      Phase 2, confirmatory: 4 blocks x 4 conditions x 8 marks = 128 trials (fixed design)
   summary    python blind_assistant.py summary <session.csv>
-  coverage   simulation check of the edge interval under serial correlation
+  calibrate  joint simulation of the complete Phase 2 decision rule, with Monte Carlo error
+  selftest   every gate x contrast-outcome combination through the Phase 2 hierarchy
 
 Conditions: A nothing on | B device only | C bowl only | D both.
 Mark k = k x 25 cm (k x 9.84 in).
@@ -39,7 +42,15 @@ CENSOR_CM = 425
 SESOI_EDGE_CM = 50.0     # smallest edge push of interest
 MAX_CM = 400.0           # 4 m: edges beyond this are censored
 FAIL_FRAC = 0.05         # more than 5% flat bootstrap fits -> INCONCLUSIVE
-CI_LEVEL = 99.9          # percentile level, calibrated by the coverage simulation to give >= 97.5% coverage
+FIXED_BLOCKS = 4         # registered block count (no adaptive change)
+BOOT_REPS = 500          # bootstrap replicates for the standard error (identical in calibration and analysis)
+Z_EDGE = 3.06            # interval = estimate +/- Z_EDGE x bootstrap SE; from CALIBRATION.json (97.5% joint quantile, worst structure)
+CAL_Q = 0.975            # calibration quantile for z (margin over the 95% coverage target)
+STRUCTS = {              # serial-dependence structures the decision rule is validated across
+    "none":   (0.0, 0.0),        # (drift SD cm, AR(1) rho)
+    "ar_mid": (30.0, 0.5),
+    "ar_high": (50.0, 0.9),
+}
 
 def now_iso():
     return dt.datetime.now().astimezone().isoformat(timespec="seconds")
@@ -117,7 +128,8 @@ def third_octave_db(x, sr):
     import numpy as np
     spec = np.abs(np.fft.rfft(x * np.hanning(len(x)))) ** 2; f = np.fft.rfftfreq(len(x), 1 / sr)
     out = []
-    for c in [50 * 2 ** (i / 3) for i in range(25)]:   # 50 Hz .. about 12.7 kHz centres
+    nb = 27 if sr >= 44100 else 25                     # 50 Hz .. 20 kHz centres (12.7 kHz if sr < 44.1 kHz)
+    for c in [50 * 2 ** (i / 3) for i in range(nb)]:
         m = (f >= c / 2 ** (1 / 6)) & (f < c * 2 ** (1 / 6)); out.append(10 * np.log10(spec[m].sum() + 1e-20))
     return np.array(out)
 
@@ -193,11 +205,13 @@ def run_maskcheck(a, hw):
     h = header(a, "maskcheck"); base, f, w, note = open_log(a, "maskcheck")
     h["seal"] = seal(trials, base + "_SEALED_order.json", a.seed); kickoff(h)
     print(f"Mic at mark {a.check_mark}, head height, no bowl. You stand there and guess: o = on, f = off.")
-    on_b, off_b, correct = [], [], 0
+    on_b, off_b, on_t, off_t, correct = [], [], [], [], 0
     for t in trials:
-        hw.device(t["device_on"]); time.sleep(a.settle); t0 = now_iso()
-        x = hw.record(4.0)
+        hw.device(t["device_on"]); xt = hw.record(1.0)          # switching-transient window
+        time.sleep(max(0.0, a.settle - 1.0)); t0 = now_iso()
+        x = hw.record(4.0)                                       # steady-state window
         if x is not None: (on_b if t["device_on"] else off_b).append(third_octave_db(x, hw.sr))
+        if xt is not None: (on_t if t["device_on"] else off_t).append(third_octave_db(xt, hw.sr))
         hw.beep()
         sim = ("o" if (t["device_on"] if rng.random() < 0.5 + a.sim_leak else not t["device_on"]) else "f") if a.simulate else None
         g = ask(f"[{t['trial']:2d}/20] device on or off? (o/f, or keypad 1/0) ", lambda s: s in ("o", "f", "1", "0"), note, sim)
@@ -210,8 +224,11 @@ def run_maskcheck(a, hw):
     if on_b and off_b:
         import numpy as np
         diff = np.mean(on_b, axis=0) - np.mean(off_b, axis=0); mx = float(np.max(np.abs(diff)))
+        mt = float(np.max(np.abs(np.mean(on_t, axis=0) - np.mean(off_t, axis=0)))) if on_t and off_t else float("nan")
         floor = float(np.mean([10 * np.log10(np.sum(10 ** (b / 10))) for b in off_b]))
-        masking = {"method": "mic", "max_band_diff_db": round(mx, 2), "masked": mx < 1.0, "noise_floor_db": round(floor, 2)}
+        masking = {"method": "mic", "max_band_diff_db": round(mx, 2), "max_transient_band_diff_db": round(mt, 2),
+                   "top_band_hz": round(50 * 2 ** ((len(diff) - 1) / 3)),
+                   "masked": bool(mx < 1.0 and mt < 1.0), "noise_floor_db": round(floor, 2)}
     elif a.simulate:
         masking = {"method": "sim", "masked": a.sim_leak < 0.2, "max_band_diff_db": 0.3 if a.sim_leak < 0.2 else 3.0}
     p = mvrp_rules_binom(correct, 20)
@@ -220,7 +237,8 @@ def run_maskcheck(a, hw):
     if masking["masked"] is None:
         print("\nNo mic: masking UNVERIFIED. A fixed session can still run, but it cannot PASS.")
     else:
-        print(f"\nMASKING GATE ({masking['method']}): largest band difference {masking['max_band_diff_db']} dB -> "
+        print(f"\nMASKING GATE ({masking['method']}): largest band difference {masking['max_band_diff_db']} dB steady, "
+              f"{masking.get('max_transient_band_diff_db', 'n/a')} dB in the switching window -> "
               + ("MASKED" if masking["masked"] else "NOT MASKED: raise --noise-gain, check isolation pads, recheck"))
     print(f"Guess diagnostic (not a gate): {correct}/20 correct, one-sided p = {p:.3f}")
     note(f"MASKCHECK {json.dumps(masking)}")
@@ -257,6 +275,7 @@ def run_walk(a, hw):
 
 def run_fixed(a, hw):
     if not a.marks or len(a.marks) != 8: sys.exit("--marks needs the 8 pre-registered marks")
+    if a.blocks != FIXED_BLOCKS and not a.simulate: sys.exit(f"the registered design uses {FIXED_BLOCKS} blocks")
     masking = {"method": "none", "masked": None}
     if a.maskcheck:
         masking = json.load(open(a.maskcheck)).get("masking", masking); a.floor_db = masking.get("noise_floor_db")
@@ -362,23 +381,36 @@ def edge_contrasts(rows, reps=1000, seed=7):
         bDB.append(e["D"][0] - e["B"][0]); bDC.append(e["D"][0] - e["C"][0])
     return est, np.array(bDB), np.array(bDC), fails / reps
 
-def summary_fixed(rows, h, reps=2000):
+def edge_interval(est, boot):
+    """Stable interval: estimate +/- Z_EDGE x bootstrap SE (no extreme-tail order statistics)."""
+    import numpy as np
+    if len(boot) < 2: return float("nan"), float("nan")
+    se = float(np.std(boot, ddof=1)); return est - Z_EDGE * se, est + Z_EDGE * se
+
+def edge_decide(est, bDB, bDC, failfrac, masked):
+    """Single Phase 2 decision hierarchy (paper §4.5 and §5.1). Applied in order; the first step that fires decides.
+      1  Gate: masking verified by mic, else INCONCLUSIVE (reason 'masking').
+      2  Gate: edges for B, C and D all 'ok' and <= 5% flat bootstrap fits, else INCONCLUSIVE (reason 'estimability').
+      3  KILL if either contrast's upper bound < SESOI.
+      4  PASS if both contrasts have lower bound > 0 and estimate >= SESOI.
+      5  INCONCLUSIVE otherwise."""
+    dDB = est["D"][0] - est["B"][0]; dDC = est["D"][0] - est["C"][0]
+    ciDB, ciDC = edge_interval(dDB, bDB), edge_interval(dDC, bDC)
+    o = dict(dDB=dDB, dDC=dDC, ciDB=ciDB, ciDC=ciDC, oDB="—", oDC="—")
+    if not masked: return dict(o, verdict="INCONCLUSIVE", reason="gate 1: masking not verified by mic")
+    if not (all(est[c][1] == "ok" for c in "BCD") and failfrac <= FAIL_FRAC and len(bDC) >= 100):
+        return dict(o, verdict="INCONCLUSIVE", reason="gate 2: an edge for B, C or D not estimable in 0–4 m, or >5% flat bootstrap fits")
+    o["oDB"] = mvrp_rules.classify(dDB, ciDB[0], ciDB[1], SESOI_EDGE_CM)
+    o["oDC"] = mvrp_rules.classify(dDC, ciDC[0], ciDC[1], SESOI_EDGE_CM)
+    return dict(o, verdict=mvrp_rules.combine_all([o["oDB"], o["oDC"]]), reason="")
+
+def summary_fixed(rows, h, reps=BOOT_REPS):
     import numpy as np
     est, bDB, bDC, failfrac = edge_contrasts(rows, reps)
     masked = (h or {}).get("masking", {}).get("masked") is True
-    estimable = all(est[c][1] == "ok" for c in "BCD") and failfrac <= FAIL_FRAC and len(bDC) >= 100
-    dDB = est["D"][0] - est["B"][0]; dDC = est["D"][0] - est["C"][0]
-    q = [(100 - CI_LEVEL) / 2, 100 - (100 - CI_LEVEL) / 2]   # calibrated so true coverage >= 97.5% (2 contrasts, Bonferroni)
-    ciDB = np.percentile(bDB, q) if len(bDB) else [float("nan")] * 2
-    ciDC = np.percentile(bDC, q) if len(bDC) else [float("nan")] * 2
-    if estimable:
-        oDB = mvrp_rules.classify(dDB, ciDB[0], ciDB[1], SESOI_EDGE_CM)
-        oDC = mvrp_rules.classify(dDC, ciDC[0], ciDC[1], SESOI_EDGE_CM)
-    else:
-        oDB = oDC = "INCONCLUSIVE"
-    verdict = mvrp_rules.combine_all([oDB, oDC]); reason = ""
-    if not estimable: reason = " (an edge for B, C or D not estimable within 0–4 m, or >5% flat bootstrap fits)"
-    elif verdict == "PASS" and not masked: verdict, reason = "INCONCLUSIVE", " (masking not verified by mic)"
+    d = edge_decide(est, bDB, bDC, failfrac, masked)
+    dDB, dDC, ciDB, ciDC, oDB, oDC = d["dDB"], d["dDC"], d["ciDB"], d["ciDC"], d["oDB"], d["oDC"]
+    verdict, reason = d["verdict"], (f" ({d['reason']})" if d["reason"] else "")
     print("\nPHASE 2 · stationary detection"); print("-" * 66)
     marks = sorted({r["dist"] for r in rows})
     print("% present by distance (cm):".ljust(28) + " ".join(f"{m:>5}" for m in marks))
@@ -391,8 +423,8 @@ def summary_fixed(rows, h, reps=2000):
         txt = {"ok": f"{v:6.0f} cm ({v / 2.54:.0f} in)", "above": "> 400 cm (beyond 4 m)",
                "below": "< nearest mark (rarely or never felt)", "flat": "not estimable (no fall with distance)"}[s]
         print(f"  edge d50 {c}: {txt}")
-    print(f"  ΔDB = {dDB:6.0f} cm   calibrated CI {ciDB[0]:6.0f} to {ciDB[1]:6.0f}   -> {oDB}")
-    print(f"  ΔDC = {dDC:6.0f} cm   calibrated CI {ciDC[0]:6.0f} to {ciDC[1]:6.0f}   -> {oDC}")
+    print(f"  ΔDB = {dDB:6.0f} cm   interval (est ± {Z_EDGE:.2f} SE) {ciDB[0]:6.0f} to {ciDB[1]:6.0f}   -> {oDB}")
+    print(f"  ΔDC = {dDC:6.0f} cm   interval (est ± {Z_EDGE:.2f} SE) {ciDC[0]:6.0f} to {ciDC[1]:6.0f}   -> {oDC}")
     print(f"  flat bootstrap fits: {failfrac:.1%} (limit {FAIL_FRAC:.0%})")
     m = (h or {}).get("masking", {})
     print(f"  masking gate: {m.get('method', 'none')} · " + {True: "MASKED", False: "NOT MASKED", None: "UNVERIFIED"}[m.get("masked")])
@@ -403,7 +435,8 @@ def summary_fixed(rows, h, reps=2000):
     print(f"  guess diagnostic (not a gate): all {k1}/{n1} p={p1:.3f} · when 'absent' {k2}/{n2} p={p2:.3f}")
     print("    above-chance guessing on 'absent' trials suggests a leaking cue (sound, floor vibration, electrical)")
     print("-" * 66); print(f"  VERDICT (pre-registered, §4.5 and §5.1): {verdict}{reason}")
-    print(f"  SESOI {SESOI_EDGE_CM:.0f} cm. PASS: both lower bounds > 0 and both estimates ≥ SESOI. KILL: either upper bound < SESOI.")
+    print(f"  Hierarchy: gate 1 masking · gate 2 estimability · KILL if either upper bound < {SESOI_EDGE_CM:.0f} cm · "
+          "PASS if both lower bounds > 0 and both estimates ≥ SESOI · else INCONCLUSIVE")
     return verdict
 
 def summary_walk(rows, n=2000, seed=7):
@@ -448,28 +481,109 @@ def run_summary(path):
     if mode == "walk": return summary_walk(rows)
     if mode == "maskcheck": print(json.dumps(h.get("masking", {}), indent=2))
 
-def run_coverage(a):
-    """Simulated sessions with serial drift: how often does the 97.5% ΔDC interval contain the truth?"""
+def run_selftest():
+    """Every combination of gate states and contrast positions goes through edge_decide; checks the hierarchy."""
     import numpy as np
-    covered = total = 0
-    for s in range(a.sessions):
-        rng = random.Random(1000 + s); drift = 0.0; rows = []
-        for b in range(1, a.blocks + 1):
-            block = [(c, m) for c in "ABCD" for m in a.marks]; rng.shuffle(block)
-            for c, m in block:
-                drift = a.sim_rho * drift + math.sqrt(1 - a.sim_rho ** 2) * rng.gauss(0, a.sim_drift_cm)
-                ans = sim_fixed({"cond": c, "mark": m}, CONDS[c][0], rng, a, drift)
-                rows.append({"block": b, "cond": c, "dist": m * 25, "ans": ans[0], "guess": ans[2], "dev": int(CONDS[c][0])})
-        est, bDB, bDC, ff = edge_contrasts(rows, reps=a.reps, seed=s)
-        if len(bDC) < 10: continue
-        lv = a.ci_level; lo, hi = np.percentile(bDC, [(100 - lv) / 2, 100 - (100 - lv) / 2]); total += 1; covered += lo <= a.sim_effect <= hi
-    print(f"coverage of the {a.ci_level}% percentile ΔDC interval: {covered}/{total} = {covered / max(total, 1):.1%}  "
-          f"(true ΔDC {a.sim_effect:.0f} cm, drift sd {a.sim_drift_cm} cm, rho {a.sim_rho}, {a.blocks} blocks, {a.reps} reps)")
+    n = 0
+    for masked in (True, False):
+        for status in ("ok", "above", "flat"):
+            for ff in (0.0, 0.10):
+                for dDB in (-100.0, 0.0, 30.0, 60.0, 150.0):
+                    for dDC in (-100.0, 0.0, 30.0, 60.0, 150.0):
+                        est = {"A": (50.0, "ok"), "B": (100.0, status), "C": (100.0, "ok")}
+                        est["D"] = (100.0 + dDC, "ok"); est["B"] = (100.0 + dDC - dDB, status)
+                        boot = np.random.default_rng(1).normal(0, 10, 500)
+                        d = edge_decide(est, dDB + boot, dDC + boot, ff, masked); n += 1
+                        gate_ok = masked and status == "ok" and ff <= FAIL_FRAC
+                        if not gate_ok: assert d["verdict"] == "INCONCLUSIVE", (masked, status, ff, d)
+                        else:
+                            exp = mvrp_rules.combine_all([mvrp_rules.classify(d["dDB"], *d["ciDB"], SESOI_EDGE_CM),
+                                                          mvrp_rules.classify(d["dDC"], *d["ciDC"], SESOI_EDGE_CM)])
+                            assert d["verdict"] == exp
+    print(f"edge selftest OK: {n} combinations; failed gates always INCONCLUSIVE, else the conjunctive rule")
+
+def _sim_session(args):
+    """One simulated Phase 2 session through the complete pipeline. Returns estimates, SEs and the verdict."""
+    import numpy as np
+    seed, eff, sd, rho, marks, z = args
+    a = argparse.Namespace(sim_effect=eff, sim_leak=0.0, sim_drift_cm=sd, sim_rho=rho)
+    rng = random.Random(seed); drift = 0.0; rows = []
+    for b in range(1, FIXED_BLOCKS + 1):
+        block = [(c, m) for c in "ABCD" for m in marks]; rng.shuffle(block)
+        for c, m in block:
+            drift = rho * drift + math.sqrt(1 - rho ** 2) * rng.gauss(0, sd)
+            ans = sim_fixed({"cond": c, "mark": m}, CONDS[c][0], rng, a, drift)
+            rows.append({"block": b, "cond": c, "dist": m * 25, "ans": ans[0], "guess": ans[2], "dev": int(CONDS[c][0])})
+    est, bDB, bDC, ff = edge_contrasts(rows, reps=BOOT_REPS, seed=seed)
+    global Z_EDGE; Z_EDGE = z
+    d = edge_decide(est, bDB, bDC, ff, True)
+    sDB = float(np.std(bDB, ddof=1)) if len(bDB) > 1 else float("nan")
+    sDC = float(np.std(bDC, ddof=1)) if len(bDC) > 1 else float("nan")
+    return dict(eDB=d["dDB"], eDC=d["dDC"], sDB=sDB, sDC=sDC, verdict=d["verdict"], gate=bool(d["reason"]))
+
+def _cp(k, n, conf=0.95):
+    """Clopper-Pearson interval for a simulated rate (its Monte Carlo error)."""
+    from math import comb
+    def cdf(x, p): return sum(comb(n, i) * p ** i * (1 - p) ** (n - i) for i in range(x + 1))
+    def solve(f, lo=0.0, hi=1.0):
+        for _ in range(60):
+            mid = (lo + hi) / 2
+            if f(mid): hi = mid
+            else: lo = mid
+        return (lo + hi) / 2
+    a = (1 - conf) / 2
+    lo = 0.0 if k == 0 else solve(lambda p: 1 - cdf(k - 1, p) >= a)
+    hi = 1.0 if k == n else solve(lambda p: cdf(k, p) <= a)
+    return round(k / n, 4), round(lo, 4), round(hi, 4)
+
+def run_calibrate(a):
+    """Two stages, separate seeds. Stage 1 sets Z_EDGE to the CAL_Q (97.5%) quantile of the joint |t| statistic under the
+    worst dependence structure; the margin above 95% absorbs Monte Carlo error in z (a 95% quantile gave 94.0%
+    validated coverage in run 1, see calib_run1_z95.log). Stage 2 validates the complete decision rule on fresh sessions and reports every
+    rate with its Clopper-Pearson Monte Carlo interval."""
+    import numpy as np
+    from multiprocessing import Pool
+    marks = a.marks or [4, 6, 8, 10, 11, 12, 14, 16]; n1, n2 = a.sessions, a.val_sessions
+    truth = lambda eff: (50.0 + eff, eff)                      # simulator: d50 B=150, C=200, D=200+eff
+    out = {"design": dict(cal_quantile=CAL_Q, blocks=FIXED_BLOCKS, marks=marks, boot_reps=BOOT_REPS, sesoi_cm=SESOI_EDGE_CM,
+                          structures=STRUCTS, calibration_sessions_per_structure_and_effect=n1,
+                          validation_sessions_per_cell=n2, tolerance=dict(joint_coverage_min=0.95,
+                          joint_coverage_cp_lower_min=0.93, false_pass_max=0.025, false_pass_cp_upper_max=0.05))}
+    with Pool(a.procs) as pool:
+        zs = {}
+        for name, (sd, rho) in STRUCTS.items():
+            t = []
+            for eff in (0.0, 100.0):
+                res = pool.map(_sim_session, [(10_000 + 7919 * i + int(eff), eff, sd, rho, marks, 3.0) for i in range(n1)])
+                tDB, tDC = truth(eff)
+                t += [max(abs(r["eDB"] - tDB) / r["sDB"], abs(r["eDC"] - tDC) / r["sDC"]) for r in res
+                      if r["sDB"] > 0 and r["sDC"] > 0 and not math.isnan(r["sDB"])]
+            zs[name] = float(np.quantile(t, CAL_Q)); print(f"stage 1 {name}: {CAL_Q:.1%} quantile of joint |t| = {zs[name]:.3f} (n={len(t)})", flush=True)
+        z = round(max(zs.values()) + 0.005, 2); out["stage1_joint_t95"] = zs; out["Z_EDGE"] = z
+        val = {}
+        for name, (sd, rho) in STRUCTS.items():
+            for eff in (0.0, 100.0):
+                res = pool.map(_sim_session, [(9_000_000 + 104729 * i + int(eff), eff, sd, rho, marks, z) for i in range(n2)])
+                tDB, tDC = truth(eff); n = len(res)
+                cov = sum(1 for r in res if r["sDB"] > 0 and abs(r["eDB"] - tDB) <= z * r["sDB"] and abs(r["eDC"] - tDC) <= z * r["sDC"])
+                v = {o: sum(r["verdict"] == o for r in res) for o in ("PASS", "KILL", "INCONCLUSIVE")}
+                val[f"{name}/effect_{int(eff)}cm"] = dict(n=n, joint_coverage=_cp(cov, n),
+                    PASS=_cp(v["PASS"], n), KILL=_cp(v["KILL"], n), INCONCLUSIVE=_cp(v["INCONCLUSIVE"], n),
+                    gate2_inconclusive=sum(r["gate"] for r in res))
+                print(f"stage 2 {name} effect {eff:.0f}: {val[f'{name}/effect_{int(eff)}cm']}", flush=True)
+        out["stage2_validation"] = val
+        tol = out["design"]["tolerance"]
+        out["tolerance_met"] = all(v["joint_coverage"][0] >= tol["joint_coverage_min"] and
+                                   v["joint_coverage"][1] >= tol["joint_coverage_cp_lower_min"] for v in val.values()) and \
+                               all(v["PASS"][0] <= tol["false_pass_max"] and v["PASS"][2] <= tol["false_pass_cp_upper_max"]
+                                   for k, v in val.items() if k.endswith("effect_0cm"))
+        print("TOLERANCE MET" if out["tolerance_met"] else "TOLERANCE NOT MET", flush=True)
+    json.dump(out, open(a.out or "CALIBRATION.json", "w"), indent=2); print("written", a.out or "CALIBRATION.json")
 
 # ============================================================ CLI
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("mode", choices=["devices", "maskcheck", "walk", "fixed", "summary", "coverage"])
+    ap.add_argument("mode", choices=["devices", "maskcheck", "walk", "fixed", "summary", "calibrate", "selftest"])
     ap.add_argument("csv", nargs="?")
     ap.add_argument("--device-out", type=int); ap.add_argument("--room-out", type=int); ap.add_argument("--mic", type=int)
     ap.add_argument("--cascade"); ap.add_argument("--cascade-gain", type=float, default=1.0)
@@ -486,16 +600,17 @@ def main():
     ap.add_argument("--simulate", action="store_true"); ap.add_argument("--sim-effect", type=float, default=0.0)
     ap.add_argument("--sim-leak", type=float, default=0.0); ap.add_argument("--sim-rho", type=float, default=0.0)
     ap.add_argument("--sim-drift-cm", type=float, default=0.0)
-    ap.add_argument("--ci-level", type=float, default=99.5); ap.add_argument("--sessions", type=int, default=100); ap.add_argument("--reps", type=int, default=300)
+    ap.add_argument("--sessions", type=int, default=300, help="calibrate: stage-1 sessions per structure and effect")
+    ap.add_argument("--val-sessions", type=int, default=400, help="calibrate: stage-2 sessions per structure and effect")
+    ap.add_argument("--procs", type=int, default=2); ap.add_argument("--out")
     a = ap.parse_args(); a.floor_db = None
     if a.mode == "summary":
         if not a.csv: sys.exit("usage: summary <session.csv>")
         return run_summary(a.csv)
     if a.mode == "devices":
         import sounddevice as sd; print(sd.query_devices()); return
-    if a.mode == "coverage":
-        if not a.marks: a.marks = [4, 6, 8, 10, 11, 12, 14, 16]
-        return run_coverage(a)
+    if a.mode == "calibrate": return run_calibrate(a)
+    if a.mode == "selftest": return run_selftest()
     if a.seed is None: a.seed = random.SystemRandom().randrange(1, 2 ** 31)
     if a.simulate: a.settle = 0.0; a.rest = 0.0
     hw = Hardware(a)

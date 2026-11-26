@@ -18,3 +18,5 @@ Last updated: 2026-11-23 (revised after XReview cross-review 6f0dbb63, 23 Nov 20
 **Honest current status:** one pilot series of 7 unblinded trials, with suggestive differences and known confounds. No prospective, blinded or pre-registered trial has been run yet, and there is no independent replication.
 
 See the white paper *Golden-Ratio Geometry as an Imposed Variable: An Open Benchtop Programme (MVRP)* for the full test plan, including the edge test and the piezo bowl.
+
+- 2026-11-26: `data/dashboard_export_2026-11-01/mvrp_results.csv` predates the audit; its ratios and N are withdrawn. Kept unchanged for the record, marked by `SUPERSEDED.md`.
