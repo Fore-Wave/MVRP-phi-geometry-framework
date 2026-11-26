@@ -1,0 +1,48 @@
+id,guest_id,guest_status,claim_source,claim,claim_type,bcc_v1,evidence_status_v2
+pais-1,pais,interviewed,interview,Plasma compression fusion paper,mechanistic,ok,supported within scope
+pais-2,pais,interviewed,interview,The Superforce,theoretical,nuance,partly supported
+pais-3,pais,interviewed,interview,The Pais Effect,mechanistic,unver,unresolved
+andrea-1,andrea,interviewed,interview,Contact and psychic experience,experiential,unver,not assessable
+forbes-1,forbes,interviewed,interview,MH370 orb videos,descriptive,disp,contradicted
+forbes-2,forbes,interviewed,interview,Zitterbewegung and superradiance,theoretical,nuance,partly supported
+rossi-1,rossi,interviewed,interview,Puthoff's zero-point papers,historical,ok,supported within scope
+rossi-2,rossi,interviewed,interview,Whittaker 1904,historical,ok,supported within scope
+chester-1,chester,interviewed,interview,E8 models of the Standard Model,theoretical,ok,supported within scope
+chester-2,chester,interviewed,interview,Second-law challenges,descriptive-physical,nuance,partly supported
+cleveland-1,cleveland,interviewed,interview,Casimir force grows as gap shrinks,descriptive-physical,ok,supported within scope
+cleveland-2,cleveland,interviewed,interview,Contra-wound toroidal coils,descriptive-physical,nuance,partly supported
+snookes-1,snookes,interviewed,interview,Inverse patterning,theoretical,unver,unresolved
+butler-1,butler,interviewed,interview,Laser DMT experiment,experiential,unver,not assessable
+butler-2,butler,interviewed,interview,DMT research is real,historical,ok,supported within scope
+elf-1,elf,interviewed,interview,Quantum-Touch and energy healing,mechanistic,unver,unresolved
+elf-2,elf,interviewed,interview,Fork work overlaps the bench,descriptive,ok,supported within scope
+doyle-1,doyle,interviewed,interview,No physics claims to grade,none,ok,supported within scope
+riddle-1,riddle,interviewed,interview,Structured water,descriptive-physical,nuance,partly supported
+riddle-2,riddle,interviewed,interview,Theraphi wellness,mechanistic,unver,unresolved
+montalk-1,montalk,prospective,public material,Matrix control system,theological,unver,not assessable
+montalk-2,montalk,prospective,public material,Jinn hypothesis for UFOs,theological,unver,not assessable
+montalk-3,montalk,prospective,public material,Protection exercises,experiential,nuance,partly supported
+montalk-4,montalk,prospective,public material,Discerning disinformation,methodological,nuance,partly supported
+verbelli-1,verbelli,prospective,public material,Light speed depends on source speed,descriptive-physical,disp,contradicted
+verbelli-2,verbelli,prospective,public material,Galilean Variance matches relativity tests,theoretical,unver,unresolved
+verbelli-3,verbelli,prospective,public material,Dowdye's extinction shift,theoretical,nuance,partly supported
+verbelli-4,verbelli,prospective,public material,Searl Effect Generator,mechanistic,unver,unresolved
+verbelli-5,verbelli,prospective,public material,SEG Magnetics claims,mechanistic,unver,unresolved
+verbelli-6,verbelli,prospective,public material,Levity disc seized,historical,nuance,partly supported
+winter-1,winter,prospective,public material,"Golden-ratio implosion explains gravity, life, soul",theoretical,unver,unresolved
+winter-2,winter,prospective,public material,Heart coherence at golden-ratio harmonics,descriptive-physical,nuance,partly supported
+winter-3,winter,prospective,public material,Lucid dreaming as the way out,experiential,nuance,partly supported
+winter-4,winter,prospective,public material,Locked Sumerian tablet,historical,disp,contradicted
+winter-5,winter,prospective,public material,Wireless signals scramble children's auras,mechanistic,disp,contradicted
+winter-6,winter,prospective,public material,Galaxy-wide AI farms souls,theological,unver,not assessable
+winter-7,winter,prospective,public material,Saturn's hexagon as soul prison,theological,nuance,partly supported
+winter-8,winter,prospective,public material,10-second breath builds coherence,descriptive-physical,ok,supported within scope
+winter-9,winter,prospective,public material,Schumann and brainwave peaks follow Planck x phi,descriptive-physical,nuance,partly supported
+winter-10,winter,prospective,public material,Golden ratio between EEG peaks,descriptive-physical,nuance,partly supported
+winter-11,winter,prospective,public material,Harmonic inclusiveness predicts lifespan,theoretical,nuance,partly supported
+winter-12,winter,prospective,public material,DNA braids tighter with heart coherence,descriptive-physical,nuance,partly supported
+winter-13,winter,prospective,public material,Coherence tracks sincere intention,mechanistic,unver,unresolved
+winter-14,winter,prospective,public material,FTL speeds point to phi,theoretical,nuance,partly supported
+winter-15,winter,prospective,public material,Hex arrays harvest souls,theological,unver,not assessable
+winter-16,winter,prospective,public material,Pyramids as wireless-power transmitters,mechanistic,disp,contradicted
+winter-17,winter,prospective,public material,"Moon placed in orbit 12,000 years ago",historical,disp,contradicted

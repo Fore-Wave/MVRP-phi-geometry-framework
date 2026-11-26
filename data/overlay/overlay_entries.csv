@@ -1,0 +1,32 @@
+id,lane,title,source_type,claim_type,tier_v1,evidence_status_v2,test_status_v2
+o1,Ancient record,Enuma Elish,primary text,mythic,3,not assessable,not operationalized
+o2,Ancient record,Pythagorean string ratios,primary text (later copy),descriptive-physical,1,supported within scope,replicated
+o3,Ancient record,"Plato, Timaeus",primary text,philosophical,3,not assessable,not operationalized
+o4,Ancient record,"Euclid, Elements VI (extreme and mean ratio)",primary text,mathematical,1,supported within scope,not applicable (proof)
+o5,Ancient record,"Vitruvius, sounding vessels",primary text,historical-engineering,1,supported within scope,not operationalized
+o6,Ancient record,Nada Brahma / Om,primary text,philosophical,3,not assessable,not operationalized
+o7,Ancient record,Emerald Tablet,primary text,philosophical,3,not assessable,not operationalized
+o8,Ancient record,Chladni figures (1787),primary text,descriptive-physical,1,supported within scope,replicated
+o9,Ancient record,Himalayan singing bowls,secondary history,historical,2,partly supported,not operationalized
+p1,Patent,"Tesla US 381,968",patent,mechanistic,1,supported within scope,replicated
+p2,Patent,"Tesla US 645,576",patent,mechanistic,1,partly supported,replicated (resonant transfer only)
+p3,Patent,"T. T. Brown US 3,187,206",patent,mechanistic,2,contradicted (thrust = ionic wind),replicated (ordinary explanation)
+p4,Patent,"Meyer US 4,936,961",patent,mechanistic,2,contradicted (over-unity),not operationalized
+p5,Patent,"Bedini US 6,545,444",patent,mechanistic,2,unresolved,not operationalized
+p6,Patent,"Pais US 10,144,532",patent,mechanistic,2,unresolved (Navy tests not positive),protocol proposed (bench analogue)
+p7,Patent,"Pais US 10,322,827",patent,mechanistic,2,unresolved,not operationalized
+m1,MVRP,Bench begins (2024),bench record,descriptive,ungraded,not assessable,not applicable
+m2,MVRP,"Dec 2025 pilot, corrected",bench record,descriptive-physical,2,unresolved (n=1 per control),pilot tested
+m3,MVRP,"PiezoPhire, bowl and water trials",bench record,descriptive-physical,2,unresolved (no data),protocol proposed
+e1,Plasma & entity,Pyramid Texts: the akh,primary text,theological,3,not assessable,not operationalized
+e2,Plasma & entity,Akkadian melammu,primary text,theological,3,not assessable,not operationalized
+e3,Plasma & entity,Rigveda: Agni,primary text,theological,3,not assessable,not operationalized
+e4,Plasma & entity,Ezekiel 1,primary text,theological,3,not assessable,not operationalized
+e5,Plasma & entity,1 Enoch 14,primary text,theological,3,not assessable,not operationalized
+e6,Plasma & entity,"Iamblichus, De Mysteriis",primary text,philosophical,3,not assessable,not operationalized
+e7,Plasma & entity,Nag Hammadi: the Archons,primary text,theological,3,not assessable,not operationalized
+e8,Plasma & entity,Qur'an 55:15: the jinn,primary text,theological,3,not assessable,not operationalized
+e9,Plasma & entity,Bardo Thodol,primary text,theological,3,not assessable,not operationalized
+e10,Plasma & entity,"Tsytovich et al. 2007, dusty-plasma helices",peer-reviewed,descriptive-physical (simulation),2,supported within scope,not replicated in lab
+e11,Plasma & entity,"Cen, Yuan & Xue 2014, ball lightning spectrum",peer-reviewed,descriptive-physical,1,supported within scope,single observation
+e12,Plasma & entity,"Davis et al. 2020, DMT entity survey",peer-reviewed,experiential (survey),2,supported within scope (as reports),completed survey

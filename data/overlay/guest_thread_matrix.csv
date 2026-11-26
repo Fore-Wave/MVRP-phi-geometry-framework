@@ -1,0 +1,15 @@
+guest_id,status,phi,imp,pc,heart,sound,plasma,planck,neg,vortex,tc,mind,free
+pais,interviewed,0,1,0,0,0,1,1,1,0,0,0,1
+andrea,interviewed,0,0,0,0,0,0,0,0,0,0,1,0
+forbes,interviewed,0,0,1,0,0,0,0,0,0,0,0,1
+rossi,interviewed,0,0,0,0,0,0,0,0,0,0,0,1
+chester,interviewed,1,0,0,0,0,0,0,1,0,1,0,1
+cleveland,interviewed,0,0,0,0,0,0,1,0,0,0,0,1
+snookes,interviewed,0,0,0,0,0,0,1,0,0,0,1,0
+butler,interviewed,0,0,0,0,0,0,0,0,0,0,1,0
+elf,interviewed,0,0,0,0,1,0,0,0,0,0,1,0
+doyle,interviewed,1,0,0,0,0,0,0,0,0,0,1,0
+riddle,interviewed,0,0,0,1,0,1,0,0,0,0,0,0
+montalk,prospective,0,0,0,0,0,0,0,0,0,0,1,0
+verbelli,prospective,0,0,0,0,1,0,0,0,0,0,0,1
+winter,prospective,1,1,1,1,0,1,1,1,0,0,1,0

@@ -8,7 +8,7 @@
 
 **"Does golden ratio (φ ≈ 1.618) electrode spacing combined with 528 Hz acoustic resonance create measurable synergy effects beyond either method alone?"**
 
-**Answer:** Yes. Preliminary trials (N=7) show **3.5× voltage persistence increase** vs baseline.
+**Current answer:** Not yet known. A pilot series (N=7, one unblinded operator, one run per control condition) showed higher and longer-lasting voltage in the φ+acoustic runs. That is suggestive, but it cannot be tested statistically yet. Pre-registered, blinded tests are next. See [CORRECTIONS.md](CORRECTIONS.md) for withdrawn statements.
 
 ---
 
@@ -24,17 +24,17 @@
 
 ---
 
-## Key Findings
+## Pilot Observations (Dec 2025, N=7, unblinded, not yet replicated)
 
-| Metric | Result | Significance |
+| Measure | Observed | Status |
 |--------|--------|--------------|
-| **Voltage Synergy** | 3.5× increase | φ+acoustic >> either alone |
-| **Beam-Voltage Coupling** | 0.810V spike | Novel finding (Dec 18, 2025) |
-| **Laser Collimation** | 30% spot reduction | First reported φ-optical effect |
-| **Bubble Coherence** | 7/10 vs 3/10 baseline | Visual organization |
-| **Framework Validation** | 90% success rate | N=7 preliminary trials |
+| **Residual voltage, 10 s after disconnect** | 0.02 V baseline · 0.02 V acoustic-only · 0.03 V φ-only · 0.07 V φ+acoustic (0.01 V resolution) | Pilot; n = 1 per control, so no significance test is possible |
+| **Beam–water voltage** | One 0.810 V reading (trials 4/5 are one duplicated session) | Exploratory (T2.5); edge test E3 planned |
+| **Laser spot size** | 5.0 → 3.5 mm in φ+acoustic runs | Pilot; thermal refraction not yet excluded |
+| **Bubble pattern score** | 7/10 vs 3/10 (subjective) | Pilot; needs blind scoring |
+| **9.36 V "fork ring" reading** | — | Reclassified: battery reading (see C3) |
 
-**Implications:** Golden ratio geometry combined with acoustic resonance shows reproducible synergy effects across electrical and optical domains.
+**Implications:** These pilot differences tell us what to test, not what is true. The confirmatory, pre-registered test plan (edge test, piezo bowl, spacing sweep, cage control) is in the MVRP white paper. Withdrawn statements are listed in [CORRECTIONS.md](CORRECTIONS.md).
 
 ---
 
@@ -174,7 +174,7 @@ MVRP-phi-geometry-framework/
 **Data Quality:**
 - Historical: Fair-Good (retrospective entry from videos)
 - Prospective: Good-Excellent (real-time dashboard logging planned)
-- Blinding protocols: Implemented for N≥30 campaign
+- Blinding protocols: designed; no blinded run completed yet
 
 **Statistical Power:**
 - Current: N=7 (preliminary, proof-of-concept)
@@ -470,3 +470,16 @@ geometric effects in optical and electroacoustic systems.
 *Open Science • Measurement-Only Claims • Reproducible Protocols • Code MIT · Data & docs CC-BY 4.0*
 
 *Last Updated: Febuary 16,2026*
+
+## Stage 1 code and data (Nov 2026)
+
+| Path | What it is | Check it |
+|---|---|---|
+| `tools/field-kit/mvrp_rules.py` | Decision hierarchy, schedules, S1, S1c and C0 analysis, sample-size algorithm | `python mvrp_rules.py selftest` |
+| `tools/field-kit/blind_assistant.py` | Edge-test runner and analysis; `calibrate` reproduces `CALIBRATION.json` (z = 3.06) | `python blind_assistant.py selftest` |
+| `tools/field-kit/golden_lock.py` | Golden-mean locking test (positive control) | `python golden_lock.py selftest` |
+| `tools/field-kit/` field cards, log sheets, striker sketch | Offline field kit for the edge test | — |
+| `data/historical/pilot_corrected.csv` | Audited Dec 2025 pilot values | see `CORRECTIONS.md` |
+| `data/overlay/` | Field Desk overlay: entries, claims, theme matrix, `null_model.py`, `rater_agreement.py` | `python null_model.py`, `python rater_agreement.py selftest` |
+
+`data/dashboard_export_2026-11-01/` predates the audit and is kept only for the record (see its `SUPERSEDED.md`).
